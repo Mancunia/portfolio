@@ -1,5 +1,6 @@
 import express, { Application} from "express";
 import Config,{PORT} from "./db/config.js";
+import dbInit from "./db/init.js";
 
 
 const app: Application = express();
@@ -9,6 +10,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //connect to database
 (new Config).connectToDBs().then(() => {
+    dbInit()
     app.emit("ready");
     console.log("DB Connected.......")
   }).catch(err => {

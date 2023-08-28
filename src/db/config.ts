@@ -1,11 +1,8 @@
-import { Dialect,Sequelize } from "sequelize";
+import { ARRAY, Dialect,Sequelize } from "sequelize";
 import "dotenv/config";
-import dbInit from "./init.js";
-// import dbInit from "./models/index.js";
 
 export const PORT = Number(process.env.PORT as string);
-
-console.log(process.env.DB_DRIVER)
+export const ALLOWED:string[] = JSON.parse(process.env.ALLOWED_HOSTS as string)
 
 class Config {
   private dbName = process.env.DB_NAME as string;
@@ -19,14 +16,17 @@ class Config {
       dialect:this.dbDriver
     })
 
-//   private mongoDBConnection =  mongoose.connect(this.mongoDB)
+  constructor() {
+
+  } 
+
 
  async connectToDBs():Promise<boolean>{
     try {
         this.sequelizeConnection
           .authenticate()
           .then(() => {
-            dbInit();
+            // dbInit();
           })
           .catch((error) => {
             throw error

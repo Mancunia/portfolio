@@ -1,9 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import Config from "../config.js";
 
-let config = new Config;
-
-
 
 //interface for roles
 interface Role_attribute{
@@ -16,12 +13,12 @@ interface Role_attribute{
 }//roles interface
 
 
-export interface RoleInput extends Optional<Role_attribute, 'id'> {}//role input DTO
+export interface RoleInput extends Optional<Role_attribute, 'id'|'role_description'> {}//role input DTO
 export interface RoleOutput extends Required<Role_attribute> {}//role output DTO
 
 //----------------------------------------------------------------Model class ----------------------------------------------------------------
 
-class RoleModel extends Model<Role_attribute, RoleInput> implements Role_attribute {
+class Role extends Model<Role_attribute, RoleInput> implements Role_attribute {
   
     public id!: number;
     public role!: string;
@@ -34,7 +31,7 @@ class RoleModel extends Model<Role_attribute, RoleInput> implements Role_attribu
     
 }
 
-RoleModel.init({
+Role.init({
     id: {
         type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
@@ -65,8 +62,8 @@ RoleModel.init({
     }
 },{
     timestamps: true,
-    sequelize: config.getDatabaseConnection(),
+    sequelize: (new Config).getDatabaseConnection(),
     paranoid: true
 })//role model properties
 
-export default RoleModel
+export default Role
