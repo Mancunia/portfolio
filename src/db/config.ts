@@ -1,6 +1,7 @@
 import { Dialect,Sequelize } from "sequelize";
 import "dotenv/config";
 import dbInit from "./init.js";
+// import dbInit from "./models/index.js";
 
 export const PORT = Number(process.env.PORT as string);
 
@@ -13,21 +14,19 @@ class Config {
   private dbDriver = process.env.DB_DRIVER as Dialect;
   private dbPassword = process.env.DB_PASSWORD as string;
 
-  private sequelizeConnection = new Sequelize(this.dbName,this.dbUser,this.dbPassword,{
-    host:this.dbHost,
-    dialect:this.dbDriver
-  })
-
+  private sequelizeConnection: Sequelize = new Sequelize(this.dbName,this.dbUser,this.dbPassword,{
+      host:this.dbHost,
+      dialect:this.dbDriver
+    })
 
 //   private mongoDBConnection =  mongoose.connect(this.mongoDB)
-
 
  async connectToDBs():Promise<boolean>{
     try {
         this.sequelizeConnection
           .authenticate()
           .then(() => {
-            // dbInit();
+            dbInit();
           })
           .catch((error) => {
             throw error
@@ -37,10 +36,11 @@ class Config {
         
     } catch (error) {
         //TODO: Handle error here with error handling module
+        console.error("Error connecting to database", error)
     }
   }
 
-  getDatabaseConnection():Sequelize{
+   getDatabaseConnection():Sequelize{
     return this.sequelizeConnection
   }
 }

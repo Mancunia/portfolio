@@ -1,8 +1,9 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import Config from "../config.js";
-import { AllowNull } from "sequelize-typescript";
 
-const config:Config = new Config
+let config = new Config;
+
+
 
 //interface for roles
 interface Role_attribute{
