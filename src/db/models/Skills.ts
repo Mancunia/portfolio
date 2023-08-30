@@ -9,8 +9,6 @@ interface Skill_attribute{
     skill_logo:string;
     skill_description:string;
     deactivated_at:Date;
-    created_at:Date;
-    updated_at:Date;
 }//skills interface
 
 export interface SkillInput extends Optional<Skill_attribute, 'id'|'skill_description'> {}//role input DTO
@@ -23,8 +21,6 @@ class Skill extends Model<Skill_attribute,SkillInput> implements Skill_attribute
     public skill_description: string;
 
     public readonly deactivated_at: Date;
-    public readonly created_at: Date;
-    public readonly updated_at: Date;
     
 }
 
@@ -53,21 +49,14 @@ Skill.init({//initialization
     deactivated_at:{
         type: DataTypes.DATE,
         allowNull: true,
-    },
-    created_at:{
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: (new Date()).toISOString
-    },
-    updated_at:{
-        type: DataTypes.DATE,
-        allowNull: true,
-        defaultValue: (new Date()).toISOString
     }
 },{
     timestamps: true,
     sequelize: (new Config).getDatabaseConnection(),
-    paranoid: true
+    paranoid: true,
+    createdAt:"created_at",
+    updatedAt:"updated_at",
+    deletedAt:"deleted_at"
 })
 
 export default Skill

@@ -8,8 +8,6 @@ interface Role_attribute{
     role:string;
     role_description:string;
     deactivated_at:Date;
-    created_at:Date;
-    updated_at:Date;
 }//roles interface
 
 
@@ -26,8 +24,6 @@ class Role extends Model<Role_attribute, RoleInput> implements Role_attribute {
 
     //timestamp
     public readonly deactivated_at: Date;
-    public readonly created_at: Date;
-    public readonly updated_at: Date;
     
 }
 
@@ -49,21 +45,14 @@ Role.init({
     deactivated_at: {
         type: DataTypes.DATE,
         allowNull: true
-    },
-    created_at: {
-        type: DataTypes.DATE,
-        allowNull:false,
-        defaultValue: (new Date()).toISOString
-    },
-    updated_at: {
-        type: DataTypes.DATE,
-        allowNull:false,
-        defaultValue: (new Date()).toISOString
     }
 },{
     timestamps: true,
     sequelize: (new Config).getDatabaseConnection(),
-    paranoid: true
+    paranoid: true,
+    createdAt:"created_at",
+    updatedAt:"updated_at",
+    deletedAt:"deleted_at"
 })//role model properties
 
 export default Role

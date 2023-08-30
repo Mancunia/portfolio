@@ -1,12 +1,22 @@
-import express, { Application} from "express";
+import express, { Application,Request,Response,NextFunction} from "express";
 import Config,{PORT} from "./db/config.js";
 import dbInit from "./db/init.js";
+import cors from "cors"
 
 
 const app: Application = express();
+
+//cors middleware
+// uses (middleware)
+app.use(cors())
+
+
 // Body parsing Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+
+
 
 //connect to database
 (new Config).connectToDBs().then(() => {

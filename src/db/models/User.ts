@@ -9,8 +9,6 @@ interface User_attribute {//user interface / protocol
     user_lastName: string;
     user_email: string;
     deactivated_at: Date;
-    created_at: Date;
-    updated_at: Date;
 }
 
 export interface UserInput extends Optional<User_attribute, 'id'> {}//role input DTO
@@ -25,8 +23,6 @@ class User extends Model<User_attribute, UserInput> implements User_attribute{
     public user_email: string;
 
     public readonly deactivated_at: Date;
-    public readonly created_at: Date;
-    public readonly updated_at: Date;
     
 }
 
@@ -60,21 +56,14 @@ User.init({ //initialization
     deactivated_at:{
         type: DataTypes.DATE,
         allowNull:true
-    },
-    created_at:{
-        type: DataTypes.DATE,
-        allowNull:false,
-        defaultValue:(new Date()).toISOString
-    },
-    updated_at:{
-        type: DataTypes.DATE,
-        allowNull:false,
-        defaultValue:(new Date()).toISOString
     }
 },{
     timestamps: true,
     sequelize: (new Config).getDatabaseConnection(),
-    paranoid: true
+    paranoid: true,
+    createdAt:"created_at",
+    updatedAt:"updated_at",
+    deletedAt:"deleted_at"
 })
 
 
