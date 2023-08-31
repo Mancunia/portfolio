@@ -1,8 +1,9 @@
 import express, { Application,Request,Response,NextFunction} from "express";
-import Config,{PORT} from "./db/config.js";
+import Config from "./db/config.js";
 import dbInit from "./db/init.js";
 import cors from "cors"
 
+let config = new Config();
 
 const app: Application = express();
 
@@ -16,10 +17,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-
-
 //connect to database
-(new Config).connectToDBs().then(() => {
+config.connectToDBs().then(() => {
     dbInit()
     app.emit("ready");
     console.log("DB Connected.......")
@@ -32,7 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 //Start server after connection
 app.on("ready", () => {
     try {
-      app.listen(PORT, () => console.log(`Server running on ${PORT}...`));
+      app.listen(config.PORT, () => console.log(`Server running on ${config.PORT}...`));
     } catch (error) {
       console.log(`Error occurred: ${error.message}`);
     }

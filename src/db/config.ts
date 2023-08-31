@@ -1,7 +1,6 @@
 import { ARRAY, Dialect,Sequelize } from "sequelize";
 import "dotenv/config";
 
-export const PORT = Number(process.env.PORT as string);
 export const ALLOWED:string[] = JSON.parse(process.env.ALLOWED_HOSTS as string)
 
 class Config {
@@ -10,6 +9,9 @@ class Config {
   private dbHost = process.env.DB_HOST as string;
   private dbDriver = process.env.DB_DRIVER as Dialect;
   private dbPassword = process.env.DB_PASSWORD as string;
+  public readonly PORT = Number(process.env.PORT as string);
+  
+
 
   private sequelizeConnection: Sequelize = new Sequelize(this.dbName,this.dbUser,this.dbPassword,{
       host:this.dbHost,
@@ -21,7 +23,7 @@ class Config {
   } 
 
 
- async connectToDBs():Promise<boolean>{
+ public async connectToDBs():Promise<boolean>{
     try {
         this.sequelizeConnection
           .authenticate()
