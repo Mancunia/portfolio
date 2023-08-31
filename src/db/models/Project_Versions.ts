@@ -1,5 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import Config from "../config.js";
+import Project_Phase from "./Project_Phase.js";
 
 //interface
 interface Project_Version_attribute{
@@ -64,5 +65,7 @@ Project_Version.init({
     updatedAt:"updated_at",
     deletedAt:"deleted_at"
 })
+//Contraints
+Project_Version.hasMany(Project_Phase)
 
 export default Project_Version

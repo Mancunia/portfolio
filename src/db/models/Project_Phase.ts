@@ -1,5 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import Config from "../config.js";
+import Project_Section from "./Project_Section.js";
 
 //interface
 interface Project_Phase_attributes{
@@ -11,8 +12,8 @@ interface Project_Phase_attributes{
     created_at?:Date;
     updated_at?:Date;
 }
-
-export interface PhaseInput extends Optional<Project_Phase_attributes,'id'> {}
+//DTOs
+export interface PhaseInput extends Optional<Project_Phase_attributes,'id'|'deactivated_at'|'phase_description'> {}
 export interface PhaseOutput extends Required<Project_Phase_attributes> {}
 
 class Project_Phase extends Model<Project_Phase_attributes, PhaseInput> implements Project_Phase_attributes{
@@ -56,5 +57,7 @@ Project_Phase.init({
     updatedAt:'updated_at',
     deletedAt:"deleted_at"
 })
+//Contraints
+Project_Phase.hasMany(Project_Section)
 
 export default Project_Phase

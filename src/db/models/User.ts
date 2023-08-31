@@ -1,5 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import Config from "../config.js";
+import Projects from "./Projects.js";
 
 interface User_attribute {//user interface / protocol
     id: string;
@@ -66,6 +67,7 @@ User.init({ //initialization
     deletedAt:"deleted_at"
 })
 
-
+//Contraints
+User.hasMany(Projects)
 
 export default User

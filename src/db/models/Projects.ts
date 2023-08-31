@@ -1,6 +1,7 @@
 import { DataTypes, Model, Optional} from "sequelize";
 import Config from "../config.js";
 import User from "./User.js";
+import Project_Version from "./Project_Versions.js";
 
 interface Projects_attributes{
     id: number;
@@ -84,6 +85,7 @@ Projects.init({
     deletedAt:"deleted_at"
 })
 
-Projects.hasOne(User)
+//Contraints
+Projects.hasMany(Project_Version)
 
 export default Projects
