@@ -18,7 +18,6 @@ class ErrorHandler{
     }
 
     public HandleError(message:any):[number,string]{
-        console.error("Error handler: ",typeof message);
         switch (message) {
             case ErrorEnum[404]:
             case "SequelizeValidationError":
