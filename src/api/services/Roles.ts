@@ -10,7 +10,7 @@ class RolesService {
 
     constructor(){
         this.Repo = new RolesRepository()
-        this.final= " "
+        this.final= ""
     }
     
 
@@ -22,14 +22,15 @@ class RolesService {
         try {
             if(!newRole.role) throw new Error(ErrorEnum[403])
             let role = await this.Repo.newRole(newRole)
-            this.final = `${loggerStatements[1]} new role ${role.role} @ ${Utility.getDate}`
+            this.final = `${loggerStatements[1]} new role ${role.role} @ ${Utility.getDate()}`
              return role
         } catch (error) {
-            this.final = `${loggerStatements[1.1]} new role ${newRole.role} @ ${Utility.getDate}`
+            this.final = `${loggerStatements[1.1]} new role ${newRole.role} @ ${Utility.getDate()}`
             throw error
         }
         finally{
             //TODO:log to file the error or success message
+            Utility.log(this.final)
         }
     }
 
@@ -37,15 +38,16 @@ class RolesService {
     async GetRoles():Promise<RoleOutput[]>{
         try {
             let roles = await this.Repo.getAllRoles()
-            this.final = `${loggerStatements[4]} all roles @ ${Utility.getDate}`
+            this.final = `${loggerStatements[4]} all roles @ ${Utility.getDate()}`
             return roles
         } catch (error) {
-            this.final = `${loggerStatements[4.1]} all roles @ ${Utility.getDate}`
+            this.final = `${loggerStatements[4.1]} all roles @ ${Utility.getDate()}`
             throw error
         }
         finally{
             //TODO: log to file the error success message
 
+            Utility.log(this.final)
         }
     }
 
@@ -54,17 +56,18 @@ class RolesService {
         try {
             if(!roleID) throw new Error(ErrorEnum[404])
             let role = await this.Repo.getRole(roleID)
-            this.final = `${loggerStatements[4]} role ${role.role} @ ${Utility.getDate}`
+            this.final = `${loggerStatements[4]} role ${role.role} @ ${Utility.getDate()}`
             return role
 
         } catch (error) {
-            this.final = `${loggerStatements[4.1]} role with ID: ${roleID} @ ${Utility.getDate}`
+            this.final = `${loggerStatements[4.1]} role with ID: ${roleID} @ ${Utility.getDate()}`
             throw error
             
         }
         finally{
             //TODO: log to file the error success message
 
+            Utility.log(this.final)
         }
 
     }
@@ -74,16 +77,17 @@ class RolesService {
             if(!roleID || !roleData) throw new Error(ErrorEnum[403])//if no role id
 
             let role = await this.Repo.updateRole(roleID,roleData)
-            this.final = `${loggerStatements[3]} role ${role.role} @ ${Utility.getDate}`
+            this.final = `${loggerStatements[2]} role ${role.role} @ ${Utility.getDate()}`
             return role
         }
         catch(error){
-            this.final = `${loggerStatements[3.1]} role with ID: ${roleID} @ ${Utility.getDate}`
-            console.error(error)
+            this.final = `${loggerStatements[2.1]} role with ID: ${roleID} @ ${Utility.getDate()}`
             throw error
         }
         finally{
             //TODO: log to file error or success message 
+
+            Utility.log(this.final)
         }
     }
 
@@ -92,14 +96,16 @@ class RolesService {
             if(!roleID) throw new Error(ErrorEnum[403])//if no role id
 
             let role = await this.Repo.deleteRole(roleID)
-            this.final = `${loggerStatements[3]} role ${role.role} @ ${Utility.getDate}`
+            this.final = `${loggerStatements[3]} role ${role.role} @ ${Utility.getDate()}`
             return role
         } catch (error) {
-            this.final = `${loggerStatements[3.1]} role with ID: ${roleID} @ ${Utility.getDate}`
+            this.final = `${loggerStatements[3.1]} role with ID: ${roleID} @ ${Utility.getDate()}`
             throw error
         }
         finally{
             //TODO: log to file error or success message
+
+            Utility.log(this.final)
         }
     }
 

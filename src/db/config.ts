@@ -10,6 +10,7 @@ class Config {
   private dbDriver = process.env.DB_DRIVER as Dialect;
   private dbPassword = process.env.DB_PASSWORD as string;
   public static PORT = Number(process.env.PORT as string);
+  public static File = process.env.FILE as string;
   
 
 
