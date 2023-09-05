@@ -5,11 +5,19 @@ import { ErrorEnum } from "../../utils/error.js";
 
 class RolesService {
     //create instance of Roles repository
-    private Repo = new RolesRepository();
+     private final:string
+     private Repo 
+
+    constructor(){
+        this.Repo = new RolesRepository()
+        this.final= " "
+    }
+    
 
     //properties
-    private final:string
+   
 
+    //Create a new role
     async CreateRole(newRole:RoleInput):Promise<RoleOutput> {
         try {
             if(!newRole.role) throw new Error(ErrorEnum[403])
@@ -21,9 +29,80 @@ class RolesService {
             throw error
         }
         finally{
-            //log to file the error or success message
+            //TODO:log to file the error or success message
         }
     }
+
+    //Get all roles
+    async GetRoles():Promise<RoleOutput[]>{
+        try {
+            let roles = await this.Repo.getAllRoles()
+            this.final = `${loggerStatements[4]} all roles @ ${Utility.getDate}`
+            return roles
+        } catch (error) {
+            this.final = `${loggerStatements[4.1]} all roles @ ${Utility.getDate}`
+            throw error
+        }
+        finally{
+            //TODO: log to file the error success message
+
+        }
+    }
+
+    //get one role
+    async GetRole(roleID:number):Promise<RoleOutput>{
+        try {
+            if(!roleID) throw new Error(ErrorEnum[404])
+            let role = await this.Repo.getRole(roleID)
+            this.final = `${loggerStatements[4]} role ${role.role} @ ${Utility.getDate}`
+            return role
+
+        } catch (error) {
+            this.final = `${loggerStatements[4.1]} role with ID: ${roleID} @ ${Utility.getDate}`
+            throw error
+            
+        }
+        finally{
+            //TODO: log to file the error success message
+
+        }
+
+    }
+
+    async UpdateRole(roleID:number,roleData:RoleInput):Promise<RoleOutput>{//update a role
+        try{
+            if(!roleID || !roleData) throw new Error(ErrorEnum[403])//if no role id
+
+            let role = await this.Repo.updateRole(roleID,roleData)
+            this.final = `${loggerStatements[3]} role ${role.role} @ ${Utility.getDate}`
+            return role
+        }
+        catch(error){
+            this.final = `${loggerStatements[3.1]} role with ID: ${roleID} @ ${Utility.getDate}`
+            console.error(error)
+            throw error
+        }
+        finally{
+            //TODO: log to file error or success message 
+        }
+    }
+
+    async DeleteRole(roleID:number):Promise<number>{
+        try {
+            if(!roleID) throw new Error(ErrorEnum[403])//if no role id
+
+            let role = await this.Repo.deleteRole(roleID)
+            this.final = `${loggerStatements[3]} role ${role.role} @ ${Utility.getDate}`
+            return role
+        } catch (error) {
+            this.final = `${loggerStatements[3.1]} role with ID: ${roleID} @ ${Utility.getDate}`
+            throw error
+        }
+        finally{
+            //TODO: log to file error or success message
+        }
+    }
+
 
 }
 

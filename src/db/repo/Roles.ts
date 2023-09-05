@@ -3,7 +3,7 @@ import { ErrorEnum } from "../../utils/error.js";
 
 interface RolesRepo_attributes{
     newRole:(roleInput:RoleInput)=>Promise<RoleOutput>;
-    updateRole:(roleID:number,roleInput:RoleInput)=>Promise<number>;
+    updateRole:(roleID:number,roleInput:RoleInput)=>Promise<RoleOutput>;
     deleteRole:(roleID:number)=>Promise<number>;
     getRole:(roleID:number)=>Promise<RoleOutput>;
     getAllRoles:()=>Promise<RoleOutput[]>;
@@ -25,7 +25,7 @@ class RolesRepository implements RolesRepo_attributes{
     }
 
     //----------------------------------------------------------------update ----------------------------------------------------------------
-    async updateRole(roleID:number, roleInput:RoleInput): Promise<number>{
+    async updateRole(roleID:number, roleInput:RoleInput): Promise<RoleOutput>{
         try {
             let role = await this.getRole(roleID);
             
@@ -33,7 +33,7 @@ class RolesRepository implements RolesRepo_attributes{
             
             await (role as RolesModel).update(roleInput)
 
-            return role.id
+            return role
 
         } catch (error) {
             throw error;
@@ -43,7 +43,6 @@ class RolesRepository implements RolesRepo_attributes{
     //----------------------------------------------------------------delete ----------------------------------------------------------------
     async deleteRole(roleID:number): Promise<number>{
         try{
-            
             let role:number = await RolesModel.destroy({where: {id: roleID}})
             if(!role) throw new Error(ErrorEnum[403])
             return role
@@ -56,9 +55,8 @@ class RolesRepository implements RolesRepo_attributes{
     //----------------------------------------------------------------get one role ----------------------------------------------------------------
     async getRole(roleID:number): Promise<RoleOutput>{
         try {
-            let role:RoleOutput = await RolesModel.findByPk(roleID);
+            let role:RoleOutput = await RolesModel.findOne({where:{id:roleID}});
             if(!role)throw new Error(ErrorEnum[404])
-
             return role;
         } catch (error) {
             throw error;
