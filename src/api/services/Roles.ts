@@ -29,8 +29,8 @@ class RolesService {
             throw error
         }
         finally{
-            //TODO:log to file the error or success message
-            Utility.log(this.final)
+            //log to file the error or success message
+            Utility.logger(this.final)
         }
     }
 
@@ -45,16 +45,16 @@ class RolesService {
             throw error
         }
         finally{
-            //TODO: log to file the error success message
+            //log to file the error success message
 
-            Utility.log(this.final)
+            Utility.logger(this.final)
         }
     }
 
     //get one role
     async GetRole(roleID:number):Promise<RoleOutput>{
         try {
-            if(!roleID) throw new Error(ErrorEnum[404])
+            if(!roleID) throw new Error(ErrorEnum[403])
             let role = await this.Repo.getRole(roleID)
             this.final = `${loggerStatements[4]} role ${role.role} @ ${Utility.getDate()}`
             return role
@@ -65,9 +65,9 @@ class RolesService {
             
         }
         finally{
-            //TODO: log to file the error success message
+            //log to file the error success message
 
-            Utility.log(this.final)
+            Utility.logger(this.final)
         }
 
     }
@@ -85,9 +85,9 @@ class RolesService {
             throw error
         }
         finally{
-            //TODO: log to file error or success message 
+            //log to file error or success message 
 
-            Utility.log(this.final)
+            Utility.logger(this.final)
         }
     }
 
@@ -103,9 +103,9 @@ class RolesService {
             throw error
         }
         finally{
-            //TODO: log to file error or success message
+            //log to file error or success message
 
-            Utility.log(this.final)
+            Utility.logger(this.final)
         }
     }
 

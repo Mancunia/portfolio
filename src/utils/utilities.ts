@@ -24,7 +24,7 @@ class Utility{
         return new Date().toUTCString()
     }
 
-    public static log(message: string){
+    public static logger(message: string){
         const file = Config.File
         message ="#"+message+"\n"
     
@@ -36,7 +36,7 @@ class Utility{
             });
 
         } catch (error) {
-            this.log("Internal Error")
+            this.logger("Internal Error")
             throw error.message
             
         }

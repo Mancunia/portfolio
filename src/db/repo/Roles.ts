@@ -15,10 +15,12 @@ class RolesRepository implements RolesRepo_attributes{
     async newRole(roleInput:RoleInput):Promise<RoleOutput>{
         try {
             let role:RoleOutput = await RolesModel.create(roleInput);
-            if(!role) throw new Error(ErrorEnum[403])
             return role
 
         } catch (error) {
+           if(error.name === "SequelizeUniqueConstraintError") {
+            throw Error(ErrorEnum[401])
+            }
             throw error;
         }
         
@@ -36,6 +38,9 @@ class RolesRepository implements RolesRepo_attributes{
             return role
 
         } catch (error) {
+            if(error.name === "SequelizeUniqueConstraintError") {
+                throw Error(ErrorEnum[401])
+                }
             throw error;
         }
     }
@@ -44,7 +49,7 @@ class RolesRepository implements RolesRepo_attributes{
     async deleteRole(roleID:number): Promise<number>{
         try{
             let role:number = await RolesModel.destroy({where: {id: roleID}})
-            if(!role) throw new Error(ErrorEnum[403])
+            if(!role) throw new Error(ErrorEnum[404])
             return role
     }
     catch(error){
