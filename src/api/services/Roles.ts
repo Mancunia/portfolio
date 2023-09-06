@@ -20,7 +20,7 @@ class RolesService {
     //Create a new role
     async CreateRole(newRole:RoleInput):Promise<RoleOutput> {
         try {
-            if(!newRole.role) throw new Error(ErrorEnum[403])
+            if(!newRole.role) throw new Error(ErrorEnum[403])//missing required attribute
             let role = await this.Repo.newRole(newRole)
             this.final = `${loggerStatements[1]} new role ${role.role} @ ${Utility.getDate()}`
              return role
@@ -30,7 +30,7 @@ class RolesService {
         }
         finally{
             //log to file the error or success message
-            Utility.logger(this.final)
+            await Utility.logger(this.final)
         }
     }
 
@@ -47,7 +47,7 @@ class RolesService {
         finally{
             //log to file the error success message
 
-            Utility.logger(this.final)
+            await Utility.logger(this.final)
         }
     }
 
@@ -67,14 +67,14 @@ class RolesService {
         finally{
             //log to file the error success message
 
-            Utility.logger(this.final)
+            await Utility.logger(this.final)
         }
 
     }
 
     async UpdateRole(roleID:number,roleData:RoleInput):Promise<RoleOutput>{//update a role
         try{
-            if(!roleID || !roleData) throw new Error(ErrorEnum[403])//if no role id
+            if(!roleID || !roleData.role) throw new Error(ErrorEnum[403])//if no role id
 
             let role = await this.Repo.updateRole(roleID,roleData)
             this.final = `${loggerStatements[2]} role ${role.role} @ ${Utility.getDate()}`
@@ -87,7 +87,7 @@ class RolesService {
         finally{
             //log to file error or success message 
 
-            Utility.logger(this.final)
+            await Utility.logger(this.final)
         }
     }
 
@@ -105,7 +105,7 @@ class RolesService {
         finally{
             //log to file error or success message
 
-            Utility.logger(this.final)
+            await Utility.logger(this.final)
         }
     }
 

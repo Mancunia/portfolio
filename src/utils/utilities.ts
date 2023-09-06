@@ -24,7 +24,7 @@ class Utility{
         return new Date().toUTCString()
     }
 
-    public static logger(message: string){
+    public static async logger(message: string){
         const file = Config.File
         message ="#"+message+"\n"
     
