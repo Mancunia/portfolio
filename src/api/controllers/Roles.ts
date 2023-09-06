@@ -19,7 +19,6 @@ class RolesController{
             let roles = await services.GetRoles();
             res.status(200).json(roles)            
         } catch (error) {
-            console.log(error)
             let errors:[number,string] = errorHandler.HandleError(error.message)
             res.status(errors[0]).json({error: errors[1]})
         }
@@ -32,7 +31,6 @@ class RolesController{
             res.status(200).json(role)//respond
             res.end()
         } catch (error) {
-            console.log(error)
             let errors:[number,string] = errorHandler.HandleError(error.message)
             res.status(errors[0]).json({error: errors[1]})
         }
@@ -58,7 +56,6 @@ class RolesController{
             res.status(200).json({role:role})
             
         } catch (error) {
-            console.log(error)
             let errors:[number,string] = errorHandler.HandleError(error.message)
             res.status(errors[0]).json({error: errors[1]})
         }
