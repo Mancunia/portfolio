@@ -1,7 +1,9 @@
 import { Router,Request,Response } from 'express'
 import RolesRouter from './RolesRoutes.js';
 import SkillRouter from './SkillsRoutes.js';
+import UserRouter from './UsersRoutes.js';
 import Config from '../../../db/config.js';
+
 
 const inputRouter = Router()
 
@@ -19,5 +21,6 @@ inputRouter.get("/", async (req: Request, res: Response): Promise<Response> => {
 
 inputRouter.use('/roles', RolesRouter)
 inputRouter.use('/skills', SkillRouter)
+inputRouter.use('/users', UserRouter)
 
 export default inputRouter

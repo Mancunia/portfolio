@@ -20,7 +20,7 @@ class ErrorHandler{
         this.fileName = file;
     }
 
-    public HandleError(error:string):[number,string,string?]{ 
+    public HandleError(error:string):[number,string,string]{ 
         switch (error) {
             case ErrorEnum[404]:
                 //code:404

@@ -40,6 +40,23 @@ class UserRepository implements User_attributes{
         }
     }
 
+     //---------------------------------------------------------------- Get User ------------------------
+   async getAUserByEmail(userID:string): Promise<UserOutput>{
+    try {
+        let user = await User.findOne({where:{user_email:userID}});
+        if(!user) throw Error(ErrorEnum[404])
+
+        return user
+    } catch (error) {
+        if(error.name === "SequelizeUniqueConstraintError") {
+            throw Error(ErrorEnum[401])
+            }
+            throw error;
+    }
+}
+
+    
+
     //---------------------------------------------------------------- Update User ------------------------
     async updateUser(userID:number, userData:UserInput): Promise<UserOutput>{
         try {

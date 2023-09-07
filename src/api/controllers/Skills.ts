@@ -11,8 +11,8 @@ class SkillController{
             let skill = await skillService.CreateSkill(req.body);
             res.status(200).json(skill);
         } catch (error) {
-            let errors:[number,string] = errorHandler.HandleError(error.message)
-            res.status(errors[0]).json({error: errors[1]})
+            let errors:[number,string,string?] = errorHandler.HandleError(error.message)
+            res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
     }
 
@@ -25,8 +25,8 @@ class SkillController{
         res.status(200).json(skill);
 
     } catch (error) {
-        let errors:[number,string] = errorHandler.HandleError(error.message)
-        res.status(errors[0]).json({error: errors[1]})
+        let errors:[number,string,string?] = errorHandler.HandleError(error.message)
+        res.status(errors[0]).json({error: errors[1],message:errors[2]})
     }
     }
 
@@ -37,8 +37,8 @@ class SkillController{
         let skill = await skillService.GetSkill(skillID)
             res.status(200).json(skill)
         }catch(error){
-            let errors:[number,string] = errorHandler.HandleError(error.message)
-            res.status(errors[0]).json({error: errors[1]})
+            let errors:[number,string,string?] = errorHandler.HandleError(error.message)
+            res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
     }
 
@@ -48,8 +48,8 @@ class SkillController{
             res.status(200).json(skills)
             
         } catch (error) {
-            let errors:[number,string] = errorHandler.HandleError(error.message)
-            res.status(errors[0]).json({error: errors[1]})
+            let errors:[number,string,string?] = errorHandler.HandleError(error.message)
+            res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
 
     }
@@ -62,8 +62,8 @@ class SkillController{
             res.status(200).json(skill)
 
         }catch(error){
-            let errors:[number,string] = errorHandler.HandleError(error.message)
-            res.status(errors[0]).json({error: errors[1]})
+            let errors:[number,string,string?] = errorHandler.HandleError(error.message)
+            res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
 
     }

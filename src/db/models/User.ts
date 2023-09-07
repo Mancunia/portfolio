@@ -12,7 +12,7 @@ interface User_attribute {//user interface / protocol
     deactivated_at: Date;
 }
 
-export interface UserInput extends Optional<User_attribute, 'id'> {}//role input DTO
+export interface UserInput extends Optional<User_attribute, 'id'|'user_lastName'|'user_firstName'> {}//role input DTO
 export interface UserOutput extends Required<User_attribute> {}//role output DTO
 
 class User extends Model<User_attribute, UserInput> implements User_attribute{
@@ -66,10 +66,6 @@ User.init({ //initialization
     updatedAt:"updated_at",
     deletedAt:"deleted_at"
 })
-
-User.beforeCreate("save",()=>{
-    
-}) 
 //Contraints
 User.hasMany(Projects)
 

@@ -6,6 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 
 const __dirname = path.dirname(__filename);
 
+const maxAge = 730*24*60*60;
 
 
 export enum loggerStatements{
@@ -43,6 +44,15 @@ class Utility{
             
         }
     }
+
+    //JSON web Token 
+
+// public static async createToken(id): Promise<string>{
+
+//   return await jwt.sign({id},service.secret,{
+//       expiresIn: maxAge
+//   });
+// }
 
    
 }
