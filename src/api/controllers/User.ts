@@ -8,8 +8,9 @@ let errorHandler = new ErrorHandler();
 class UserController{
     async Signup(req: Request, res: Response){
         try {
-            let skill = await services.CreateUser(req.body);
-            res.status(200).json(skill);
+            let user = await services.CreateUser(req.body);
+            if(user) res.status(200).json({success: true, message:"User created successfully"});
+            
         } catch (error) {
             let errors:[number,string,string?] = errorHandler.HandleError(error.message)
             res.status(errors[0]).json({error: errors[1],message:errors[2]})

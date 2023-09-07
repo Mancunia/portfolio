@@ -3,9 +3,9 @@ import { ErrorEnum } from "../../utils/error.js";
 
 interface User_attributes{
     newUser:(userData:UserInput)=>Promise<UserOutput>;
-    getUser:(userID:number)=>Promise<UserOutput>
     updateUser:(userID:number,newUser:UserInput)=>Promise<UserOutput>
     deleteUser:(userID:number)=>Promise<number>
+    getAllUsers:()=>Promise<UserOutput[]>
 }
 
 class UserRepository implements User_attributes{
@@ -13,8 +13,12 @@ class UserRepository implements User_attributes{
     //---------------------------------------------------------------- New User ------------------------
     async newUser(userData: UserInput): Promise<UserOutput>{
         try {
-        let user:UserOutput = await User.create(userData)
-        return user
+            let users = await this.getAllUsers()
+
+            if (users.length>0) throw new Error(ErrorEnum[403])//There can only be one user
+
+            let user:UserOutput = await User.create(userData)
+            return user
 
         } catch (error) {
 
@@ -27,7 +31,7 @@ class UserRepository implements User_attributes{
     }
 
     //---------------------------------------------------------------- Get User ------------------------
-   async getUser(userID:number): Promise<UserOutput>{
+   private async getUser(userID:number): Promise<UserOutput>{
         try {
             let user = await User.findOne({where:{id:userID}});
 
@@ -40,7 +44,21 @@ class UserRepository implements User_attributes{
         }
     }
 
-     //---------------------------------------------------------------- Get User ------------------------
+    //---------------------------------------------------------------- Get User ------------------------
+   async getAllUsers(): Promise<UserOutput[]>{
+    try {
+        let user = await User.findAll();
+
+        return user
+    } catch (error) {
+        if(error.name === "SequelizeUniqueConstraintError") {
+            throw Error(ErrorEnum[401])
+            }
+            throw error;
+    }
+}
+
+     //---------------------------------------------------------------- Get A User By Email ------------------------
    async getAUserByEmail(userID:string): Promise<UserOutput>{
     try {
         let user = await User.findOne({where:{user_email:userID}});

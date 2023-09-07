@@ -18,15 +18,15 @@ class UserService{
         this.Repo = new UserRepository();
     }
 
-    async CreateUser(userData: UserInput): Promise<UserOutput>{//Create User
+    async CreateUser(userData: UserInput): Promise<boolean>{//Create User
         try {
             if(!userData.user_name || !userData.user_email || !userData.user_password) throw new Error(ErrorEnum[403])
-
+            
             userData.user_password = await bcrypt.hash(userData.user_password,10)
             let user = await this.Repo.newUser(userData);
 
             this.final = `${loggerStatements[1]} ${user.user_name} @ ${Utility.getDate()}`
-            return user
+            return true
             
         } catch (error) {
             this.final = `${loggerStatements[1.1]} ${userData.user_name} @ ${Utility.getDate()}`
