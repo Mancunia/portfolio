@@ -20,28 +20,28 @@ class ErrorHandler{
         this.fileName = file;
     }
 
-    public HandleError(error:string):[number,string]{ 
+    public HandleError(error:string):[number,string,string?]{ 
         switch (error) {
             case ErrorEnum[404]:
                 //code:404
-            return [ErrorHandler.STATUS_ERROR_404, "Not Found"]
+            return [ErrorHandler.STATUS_ERROR_404, "Not Found","Data not found"]
             
 
             case ErrorEnum[403]:
                 //code:403
-            return [ErrorHandler.STATUS_ERROR_403, "Forbidden Action"]
+            return [ErrorHandler.STATUS_ERROR_403, "Forbidden Action","Action is not allowed or there is something you are missing"]
 
             case ErrorEnum[401]:
                     //code:401
-                return [ErrorHandler.STATUS_ERROR_401, "Unauthorized action"]
+                return [ErrorHandler.STATUS_ERROR_401, "Unauthorized action","Field name should be unique"]
             
             case ErrorEnum[400]:
                     //code:400
-                return [ErrorHandler.STATUS_ERROR_400, "Unknown Error"]
+                return [ErrorHandler.STATUS_ERROR_400, "Unknown Error","Contact Support for clarification"]
 
             default:
                 //code:500
-                return [ErrorHandler.STATUS_ERROR_500, "Internal Server Error"]
+                return [ErrorHandler.STATUS_ERROR_500, "Internal Server Error","This is on us, Sorry!"]
                 
         }
     }

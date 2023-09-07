@@ -67,6 +67,9 @@ User.init({ //initialization
     deletedAt:"deleted_at"
 })
 
+User.beforeCreate("save",()=>{
+    
+}) 
 //Contraints
 User.hasMany(Projects)
 

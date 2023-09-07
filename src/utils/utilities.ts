@@ -13,10 +13,12 @@ export enum loggerStatements{
     "Successfully updated"=2,
     "Successfully deleted"=3,
     "Successfully fetched"=4,
+    "Successfully logged in"=5,
     "Error creating"=1.1,
     "Error updating"=2.1,
     "Error deleting"=3.1,
-    "Error fetching"=4.1
+    "Error fetching"=4.1,
+    "Error logging in"=5.1
 }
 
 class Utility{
