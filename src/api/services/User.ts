@@ -55,7 +55,7 @@ class UserService{
                 return userDetails
                } else {
                 // Passwords don't match
-                throw new Error(ErrorEnum[401])
+                throw new Error(ErrorEnum[403])
                }
             
         } catch (error) {
