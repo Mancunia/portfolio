@@ -9,7 +9,7 @@ class SkillController{
     async CreateSkill(req: Request, res: Response){//create skill
         try {
             let skill = await skillService.CreateSkill(req.body);
-            res.status(200).json(skill);
+            res.status(201).json(skill);
         } catch (error) {
             let errors:[number,string,string?] = errorHandler.HandleError(error.message)
             res.status(errors[0]).json({error: errors[1],message:errors[2]})

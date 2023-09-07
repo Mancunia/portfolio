@@ -7,7 +7,7 @@ class RolesController{
     async CreateRole(req: Request, res: Response){//create new role
         try {
             let role = await services.CreateRole(req.body) 
-            res.status(200).json(role);
+            res.status(201).json(role);
         } catch (error) {
             let errors:[number,string,string] = errorHandler.HandleError(error.message)
             res.status(errors[0]).json({error: errors[1],message:errors[2]})
@@ -45,7 +45,6 @@ class RolesController{
             let role = await services.UpdateRole(roleID,roleData)
             res.status(200).json(role)
         } catch (error) {
-            // console.log(error)
             let errors:[number,string,string] = errorHandler.HandleError(error.message)
             res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }

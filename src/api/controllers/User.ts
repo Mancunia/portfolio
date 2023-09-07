@@ -9,7 +9,7 @@ class UserController{
     async Signup(req: Request, res: Response){
         try {
             let user = await services.CreateUser(req.body);
-            if(user) res.status(200).json({success: true, message:"User created successfully"});
+            if(user) res.status(201).json({success: true, message:"User created successfully"});
             
         } catch (error) {
             let errors:[number,string,string?] = errorHandler.HandleError(error.message)
