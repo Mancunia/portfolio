@@ -3,6 +3,7 @@ import RolesRouter from './RolesRoutes.js';
 import SkillRouter from './SkillsRoutes.js';
 import UserRouter from './UsersRoutes.js';
 import Config from '../../../db/config.js';
+import UserMiddlware from '../../middleware/User.js';
 
 
 const inputRouter = Router()
@@ -21,6 +22,6 @@ inputRouter.get("/", async (req: Request, res: Response): Promise<Response> => {
 
 inputRouter.use('/roles', RolesRouter)
 inputRouter.use('/skills', SkillRouter)
-inputRouter.use('/users', UserRouter)
+inputRouter.use('/users',UserMiddlware.CHECK_USER_LOGIN, UserRouter)
 
 export default inputRouter

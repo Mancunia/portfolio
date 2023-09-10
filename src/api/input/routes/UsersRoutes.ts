@@ -6,6 +6,7 @@ const controllers = new UserController()
 
 UserRouter.post('/',controllers.Signup)//create a new user
 UserRouter.post('/login',controllers.SignIn)//User login
+UserRouter.get('/logout',controllers.SignOut)//User log out
 
 
 export default UserRouter

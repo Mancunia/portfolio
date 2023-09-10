@@ -1,6 +1,7 @@
 import express, { Application} from "express";
 import * as Sentry from "@sentry/node";
 import { ProfilingIntegration } from "@sentry/profiling-node";
+import cookieParser from "cookie-parser"
 
 import Config from "./db/config.js";
 import dbInit from "./db/init.js";
@@ -39,6 +40,7 @@ app.use(cors())
 // Body parsing Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 //Sentry tracer 
 app.use(Sentry.Handlers.tracingHandler());
@@ -70,3 +72,7 @@ app.on("ready", () => {
       console.log(`Error occurred: ${error.message}`);
     }
   });
+
+app.on("error", () => {
+  //TODO: Handle server error here
+})

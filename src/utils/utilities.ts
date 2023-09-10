@@ -1,12 +1,14 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import jwt from "jsonwebtoken"
 import Config from '../db/config.js';
+import { ErrorEnum } from './error.js';
 const __filename = fileURLToPath(import.meta.url);
 
 const __dirname = path.dirname(__filename);
 
-const maxAge = 730*24*60*60;
+
 
 
 export enum loggerStatements{
@@ -23,6 +25,12 @@ export enum loggerStatements{
 }
 
 class Utility{
+
+    public static SessionMaxAge = 730*24*60*60;//2 years
+    public static RefreshMaxAge = 60*24*60;
+
+    public static SESSION = "session";
+
     public static getDate(): String{
         return new Date().toUTCString()
     }
@@ -47,12 +55,42 @@ class Utility{
 
     //JSON web Token 
 
-// public static async createToken(id): Promise<string>{
+public static async SessionToken(id:string): Promise<string>{
 
-//   return await jwt.sign({id},service.secret,{
-//       expiresIn: maxAge
-//   });
-// }
+  return await jwt.sign({id},Config.SECRET,{
+      expiresIn: Utility.SessionMaxAge
+  });
+}
+
+
+public static async DECODE_TOKEN(token:string): Promise<string>{
+    //check token
+    if(token){
+        let back:string = "";
+  
+        try{
+          
+            await jwt.verify(token,Config.SECRET,(err,decodedToken)=>{
+            if(err){
+                throw new Error(ErrorEnum[403]);
+            }
+            else{
+               
+                back=decodedToken.id;
+            }
+            });
+  
+            return back;
+        }
+        catch(err){
+            throw err;
+        }
+  
+        }
+        
+        
+   
+  }
 
    
 }

@@ -50,9 +50,9 @@ class UserService{
                     user_email: user.user_email,
                     user_fullname: `${user.user_firstName} ${user.user_lastName}`
                 }
-                this.final = `${loggerStatements[5]} ${userID} @ ${Utility.getDate()}`
+                this.final = `${loggerStatements[5]} ${userID.user_name} @ ${Utility.getDate()}`
 
-                return userDetails
+                return {userDetails,token:await Utility.SessionToken(user.id)}
                } else {
                 // Passwords don't match
                 throw new Error(ErrorEnum[403])

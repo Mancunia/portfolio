@@ -11,6 +11,7 @@ class Config {
   private dbPassword = process.env.DB_PASSWORD as string;
   public static PORT = Number(process.env.PORT as string);
   public static File = process.env.FILE as string;
+  public static SECRET = process.env.SECRET as string;
   
 
 
