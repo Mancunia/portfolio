@@ -1,6 +1,7 @@
 import ErrorHandler from "../../utils/error.js";
 import SkillService from "../services/Skills.js";
 import { Request,Response } from "express";
+import { ErrorEnum } from "../../utils/error.js";
 let errorHandler = new ErrorHandler();
 let skillService = new SkillService();
 
@@ -8,6 +9,7 @@ class SkillController{
 
     async CreateSkill(req: Request, res: Response){//create skill
         try {
+            if(res.locals.user) throw new Error(ErrorEnum[403])
             let skill = await skillService.CreateSkill(req.body);
             res.status(201).json(skill);
         } catch (error) {
@@ -18,6 +20,7 @@ class SkillController{
 
     async UpdateSkill(req: Request, res: Response){//update skill
     try {
+        if(res.locals.user) throw new Error(ErrorEnum[403])
         let skillID = Number(req.params.id);
         let skill = req.body
         skill = await skillService.UpdateSkill(skillID, skill);
@@ -56,6 +59,7 @@ class SkillController{
 
     async DeleteSkill(req:Request,res:Response){//Delete skill
         try{
+            if(res.locals.user) throw new Error(ErrorEnum[403])
             let skill = Number(req.params.id);
             skill = await skillService.DeleteSkill(skill)
 

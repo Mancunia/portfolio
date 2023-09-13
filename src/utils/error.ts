@@ -20,7 +20,7 @@ class ErrorHandler{
         this.fileName = file;
     }
 
-    public HandleError(error:string):[number,string,string]{ 
+    public HandleError(error:string,message="Contact Support for clarification"):[number,string,string]{ 
         switch (error) {
             case ErrorEnum[404]:
                 //code:404
@@ -37,11 +37,11 @@ class ErrorHandler{
             
             case ErrorEnum[400]:
                     //code:400
-                return [ErrorHandler.STATUS_ERROR_400, "Unknown Error","Contact Support for clarification"]
+                return [ErrorHandler.STATUS_ERROR_400, "Unknown Error",message]
 
             default:
                 //code:500
-                return [ErrorHandler.STATUS_ERROR_500, "Internal Server Error","This is on us, Sorry!"]
+                return [ErrorHandler.STATUS_ERROR_500, "Internal Server Error","Sorry, this is on us. Please try again!"]
                 
         }
     }

@@ -21,10 +21,8 @@ class UserController{
     async SignIn(req: Request, res: Response){
         try {
             
-            if(res.locals.user) {
-                console.log('From middleware: ',res.locals.user, res.locals?.token)
-                throw new Error(ErrorEnum[403])
-            }
+            if(res.locals.user) throw new Error(ErrorEnum[403])
+            
 
             let {userDetails,token} = await services.Login(req.body);
 

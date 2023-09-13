@@ -6,6 +6,7 @@ import Project_VersionModel from "./models/Project_Versions.js";
 import Project_PhaseModel from "./models/Project_Phase.js";
 import Project_SectionModel from "./models/Project_Section.js";
 import MediaModel from "./models/Project_Media.js";
+import FormatModel from "./models/Format.js";
 
 
 //Check environment
@@ -22,6 +23,8 @@ const dbInit = ()=> {
          Project_PhaseModel.sync({alter: isDev});
          Project_SectionModel.sync({alter: isDev});
          MediaModel.sync({alter: isDev});
+         FormatModel.sync({alter: isDev});
+
 
     } catch (error) {
         console.log("Error:",error);

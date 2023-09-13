@@ -12,6 +12,7 @@ class Config {
   public static PORT = Number(process.env.PORT as string);
   public static File = process.env.FILE as string;
   public static SECRET = process.env.SECRET as string;
+  public static ENVIRONMENT = process.env.NODE_ENV as string;
   
 
 

@@ -28,6 +28,7 @@ Format.init({
     format_name: {
         type:DataTypes.STRING,
         allowNull:false,
+        unique:true
     },
     format_icon: {
         type:DataTypes.STRING,
