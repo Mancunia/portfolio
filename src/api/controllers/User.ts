@@ -13,7 +13,7 @@ class UserController{
             if(user) res.status(201).json({success: true, message:"User created successfully"});
             
         } catch (error) {
-            let errors:[number,string,string?] = errorHandler.HandleError(error.message)
+            let errors:[number,string,string?] = await errorHandler.HandleError(error.message)
             res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
     }
@@ -32,7 +32,7 @@ class UserController{
             
         } catch (error) {
             // console.log('error:',error)
-            let errors:[number,string,string?] = errorHandler.HandleError(error.message)
+            let errors:[number,string,string?] = await errorHandler.HandleError(error.message)
             res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
     }
@@ -48,7 +48,7 @@ class UserController{
             res.status(200).send("OK")
 
         }catch (error) {
-            let errors:[number,string,string?] = errorHandler.HandleError(error.message)
+            let errors:[number,string,string?] = await errorHandler.HandleError(error.message)
             res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
     }

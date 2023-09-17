@@ -2,6 +2,7 @@ import express, { Application} from "express";
 import * as Sentry from "@sentry/node";
 import { ProfilingIntegration } from "@sentry/profiling-node";
 import cookieParser from "cookie-parser"
+import fileUpload from "express-fileupload"
 
 import Config from "./db/config.js";
 import dbInit from "./db/init.js";
@@ -41,6 +42,7 @@ app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(fileUpload({createParentPath:true}))
 
 //Sentry tracer 
 app.use(Sentry.Handlers.tracingHandler());

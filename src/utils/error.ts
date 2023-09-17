@@ -20,28 +20,28 @@ class ErrorHandler{
         this.fileName = file;
     }
 
-    public HandleError(error:string,message="Contact Support for clarification"):[number,string,string]{ 
+    public async HandleError(error:string,message=""):Promise<[number,string,string]>{ 
         switch (error) {
             case ErrorEnum[404]:
                 //code:404
-            return [ErrorHandler.STATUS_ERROR_404, "Not Found","Data not found"]
+            return [ErrorHandler.STATUS_ERROR_404, "Not Found",message || "Data not found"]
             
 
             case ErrorEnum[403]:
                 //code:403
-            return [ErrorHandler.STATUS_ERROR_403, "Forbidden Action","Action is not allowed or there is something you are missing"]
+            return [ErrorHandler.STATUS_ERROR_403, "Forbidden Action",message || "Action is not allowed or there is something you are missing"]
 
             case ErrorEnum[401]:
                     //code:401
-                return [ErrorHandler.STATUS_ERROR_401, "Unauthorized action","Field name should be unique"]
+                return [ErrorHandler.STATUS_ERROR_401, "Unauthorized action",message || "Field name should be unique"]
             
             case ErrorEnum[400]:
                     //code:400
-                return [ErrorHandler.STATUS_ERROR_400, "Unknown Error",message]
+                return [ErrorHandler.STATUS_ERROR_400, "Unknown Error",message || "Contact Support for clarification"]
 
             default:
                 //code:500
-                return [ErrorHandler.STATUS_ERROR_500, "Internal Server Error","Sorry, this is on us. Please try again!"]
+                return [ErrorHandler.STATUS_ERROR_500, "Internal Server Error",message || "Sorry, this is on us. Please try again!"]
                 
         }
     }

@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import jwt from "jsonwebtoken"
+import { Request } from 'express';
 import Config from '../db/config.js';
 import { ErrorEnum } from './error.js';
 const __filename = fileURLToPath(import.meta.url);
@@ -9,7 +10,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
-
+export interface UploadRequest extends Request {
+    files:any
+}
 
 export enum loggerStatements{
     "Successfully created"=1,
