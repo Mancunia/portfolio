@@ -2,3 +2,5 @@
 .env
 /dist
 /src/utils-logs.log
+/public
+/projects

@@ -6,15 +6,26 @@ import { ErrorEnum } from "../../utils/error.js";
 
 class FormatService{
     private Repo: FormatRepository;
+    private dir: string = "./public/"
     private final:string = "";
 
     constructor(){
         this.Repo = new FormatRepository();
     }
 
-    async CreateFormat(formatData:FormatInput): Promise<FormatOutput>{//new format
+    /*
+    0. move file first
+    1. return file location
+    2. update formatData with file location
+    3. post formatData
+    */
+    async CreateFormat(formatData:FormatInput,file:any = undefined): Promise<FormatOutput>{//new format
         try {
             if(!formatData.format_name) throw new Error(ErrorEnum[403]);
+
+            if(file){
+                formatData.format_icon = await this.MoveFile(file)
+            }
             let format = await this.Repo.newFormat(formatData);
 
             this.final = `${loggerStatements[1]} new Format ${format.format_name} @ ${Utility.getDate()}`
@@ -62,9 +73,12 @@ class FormatService{
         }
     }
 
-    async UpdateFormat(formatID:number,formatData:FormatInput):Promise<FormatOutput>{//update format
+    async UpdateFormat(formatID:number,formatData:FormatInput,file:any = undefined):Promise<FormatOutput>{//update format
     try {
         if (!formatID || !formatData.format_name) throw new Error(ErrorEnum[403])
+        if(file){
+            formatData.format_icon = await this.MoveFile(file)
+        }
         let format = await this.Repo.updateFormat(formatID,formatData);
         this.final = `${loggerStatements[4]} ${format.format_name} formats @ ${Utility.getDate()}`
         return format
@@ -89,6 +103,20 @@ class FormatService{
         }
         finally{
             await Utility.logger(this.final)
+        }
+    }
+
+    private async MoveFile(file:any): Promise<string> {
+        try {
+            let fileLocation = await Utility.GET_DIRECTORY(file.name,this.dir)
+                console.log('fileLocation:',fileLocation)
+                file.mv(fileLocation,(err)=>{
+                    if(err)throw new Error(ErrorEnum[500]);
+                })
+                return fileLocation
+            
+        } catch (error) {
+            throw new Error(ErrorEnum[500]);
         }
     }
 

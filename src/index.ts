@@ -9,6 +9,7 @@ import dbInit from "./db/init.js";
 import cors from "cors"
 import inputRouter from "./api/input/routes/index.js";
 
+
 let config = new Config();
 
 const app: Application = express();
@@ -37,12 +38,12 @@ app.use(Sentry.Handlers.requestHandler());
 // uses (middleware)
 app.use(cors())
 
-
 // Body parsing Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(fileUpload({createParentPath:true}))
+app.use('/public',express.static('public'))//serve static files
 
 //Sentry tracer 
 app.use(Sentry.Handlers.tracingHandler());

@@ -5,9 +5,10 @@ import jwt from "jsonwebtoken"
 import { Request } from 'express';
 import Config from '../db/config.js';
 import { ErrorEnum } from './error.js';
+
 const __filename = fileURLToPath(import.meta.url);
 
-const __dirname = path.dirname(__filename);
+export const __dirname = path.dirname(__filename);
 
 
 export interface UploadRequest extends Request {
@@ -59,10 +60,14 @@ class Utility{
     //JSON web Token 
 
 public static async SessionToken(id:string): Promise<string>{
-
-  return await jwt.sign({id},Config.SECRET,{
+    try {
+        return await jwt.sign({id},Config.SECRET,{
       expiresIn: Utility.SessionMaxAge
   });
+    } catch (error) {
+       throw error; 
+    }
+  
 }
 
 
@@ -85,14 +90,27 @@ public static async DECODE_TOKEN(token:string): Promise<string>{
   
             return back;
         }
-        catch(err){
-            throw err;
+        catch(error){
+            throw error;
         }
   
         }
         
         
    
+  }
+
+  public static async GET_DIRECTORY(file:string,dir: string = __dirname): Promise<string> {
+    try {
+        console.log('location:',typeof(file))
+        let directory = await path.join(dir,file);
+        // fs.mkdirSync(directory)
+        console.log('location 2:',directory)
+        return directory;
+    } catch (error) {
+        console.log(error);
+        throw error
+    }
   }
 
    

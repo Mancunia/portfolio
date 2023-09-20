@@ -32,18 +32,15 @@ class FileUpload implements FileUpload_attributes {
             
             const files = req.files.file
             let FileExtensions = []
-            console.log("file:",files.length)
 
             if(files.length > 1){//check multiple files
             files.forEach(file => {
-                console.log(file.name)
                     FileExtensions.push(path.extname(file.name))
                 
             })
             }else{//check for file extension
                 FileExtensions.push(path.extname(files.name))
             }
-            console.log('ext:',FileExtensions)
 
             let allowed = FileExtensions.every(ext => {
                 return extension.includes(ext)
@@ -57,7 +54,6 @@ class FileUpload implements FileUpload_attributes {
 
             next()
         } catch (error) {
-            console.log(error)
             let err = await errorHandler.HandleError(error,"Error checking file extensions");
             res.status(err[0]).json({error:err[1],message:err[2]})
         }
@@ -94,6 +90,8 @@ class FileUpload implements FileUpload_attributes {
             res.status(err[0]).json({error:err[1],message:err[2]})
         }
     }
+
+   
 
 }
 
