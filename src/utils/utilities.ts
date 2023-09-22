@@ -34,6 +34,7 @@ class Utility{
     public static RefreshMaxAge = 60*24*60;
 
     public static SESSION = "session";
+    public static Chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_$#%*&';
 
     public static getDate(): String{
         return new Date().toUTCString()
@@ -102,14 +103,27 @@ public static async DECODE_TOKEN(token:string): Promise<string>{
 
   public static async GET_DIRECTORY(file:string,dir: string = __dirname): Promise<string> {
     try {
-        console.log('location:',typeof(file))
         let directory = await path.join(dir,file);
-        // fs.mkdirSync(directory)
-        console.log('location 2:',directory)
+       
         return directory;
     } catch (error) {
         console.log(error);
         throw error
+    }
+  }
+
+  
+  public static async genRandCode(size:number = 16):Promise<string>{
+    try{
+      let result = ""
+      for ( let i = 0; i < size ; i++ ) {
+          result += Utility.Chars.charAt(Math.floor(Math.random() * Utility.Chars.length));
+      }
+      if (result.length < size) throw new Error(ErrorEnum[500])
+        return result
+  }
+    catch(error) {
+    throw error
     }
   }
 

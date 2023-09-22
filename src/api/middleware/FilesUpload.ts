@@ -30,8 +30,9 @@ class FileUpload implements FileUpload_attributes {
    async CHECK_FILE_TYPE(req: UploadWithFileRequest, res: Response, next: NextFunction){
         try {
             
-            const files = req.files.file
+            const files = req.files?.file
             let FileExtensions = []
+            if(files){
 
             if(files.length > 1){//check multiple files
             files.forEach(file => {
@@ -51,9 +52,10 @@ class FileUpload implements FileUpload_attributes {
                 res.status(403).json({status:"Forbidden",message})
                 return
             }
-
+        }
             next()
         } catch (error) {
+            console.log(error)
             let err = await errorHandler.HandleError(error,"Error checking file extensions");
             res.status(err[0]).json({error:err[1],message:err[2]})
         }
@@ -62,9 +64,9 @@ class FileUpload implements FileUpload_attributes {
     async CHECK_FILE_SIZE(req: UploadWithFileRequest, res: Response, next: NextFunction){
         try {
             console.log("file size exists")
-            const files = req.files.file
+            const files = req.files?.file
             let FilesOverSizeLimit = []
-
+            if(files){
             if(files.length > 1){//handle multiple files size
             files.forEach(file => {
                 if(file.size > size){
@@ -82,6 +84,7 @@ class FileUpload implements FileUpload_attributes {
                 res.status(403).json({status:"Forbiden",message});
                 return
             }
+        }
 
             next()
         } catch (error) {

@@ -1,5 +1,6 @@
 import RolesModel,{RoleInput,RoleOutput} from "../models/Roles.js";
 import { ErrorEnum } from "../../utils/error.js";
+import { Op } from "sequelize";
 
 interface RolesRepo_attributes{
     newRole:(roleInput:RoleInput)=>Promise<RoleOutput>;
@@ -58,9 +59,14 @@ class RolesRepository implements RolesRepo_attributes{
     }
 
     //----------------------------------------------------------------get one role ----------------------------------------------------------------
-    async getRole(roleID:number): Promise<RoleOutput>{
+    async getRole(roleID:number|string): Promise<RoleOutput>{
         try {
-            let role:RoleOutput = await RolesModel.findOne({where:{id:roleID}});
+            let role:RoleOutput = await RolesModel.findOne({ where: {
+                [Op.or]: [
+                  { id: roleID },
+                  { role: roleID },
+                ],
+              },});
             if(!role)throw new Error(ErrorEnum[404])
             return role;
         } catch (error) {

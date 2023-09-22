@@ -1,6 +1,5 @@
 import { DataTypes, Model, Optional} from "sequelize";
 import Config from "../config.js";
-import User from "./User.js";
 import Project_Version from "./Project_Versions.js";
 
 interface Projects_attributes{
@@ -9,15 +8,16 @@ interface Projects_attributes{
     project_name: string;
     project_description: string;
     project_link: string;
+    project_dir: string;
     project_logo: string;
-    project_role: number[];
-    project_skills: number[];
+    project_role: number;
+    project_skills: string;
     project_users: any;
     deactivated_at: Date;
 }
 
 //DTO
-export interface ProjectsInput extends Optional<Projects_attributes, 'id'|'project_description'|'project_link'|'project_logo'>{}//input DTO
+export interface ProjectsInput extends Optional<Projects_attributes, 'id'|'project_description'|'project_link'|'project_logo'|'project_uuid'>{}//input DTO
 export interface ProjectsOutput extends Required<Projects_attributes>{}//output DTO
 
 class Projects extends Model<Projects_attributes, ProjectsInput> implements Projects_attributes{
@@ -26,9 +26,10 @@ class Projects extends Model<Projects_attributes, ProjectsInput> implements Proj
     public project_name: string;
     public project_description: string;
     public project_link: string;
+    public project_dir: string;
     public project_logo: string;
-    public project_role: number[];
-    public project_skills: number[];
+    public project_role: number;
+    public project_skills: string;
     public project_users: number;//foreign key
 
     public readonly project_uuid: string;
@@ -62,12 +63,16 @@ Projects.init({
     project_logo: {
         type:DataTypes.STRING
     },
+    project_dir:{
+        type:DataTypes.STRING,
+        allowNull:true
+    },
     project_role: {
         type:DataTypes.INTEGER,
         allowNull:false
     },
     project_skills: {
-        type:DataTypes.INTEGER,
+        type:DataTypes.STRING,
         allowNull:false
     },
     project_users: {
