@@ -6,6 +6,7 @@ import FormatRouter from './Format.js';
 import Config from '../../../db/config.js';
 import UserMiddlware from '../../middleware/User.js';
 import ProjectRouter from './ProjectRoutes.js';
+import VersionRouter from './VersionRoutes.js';
 
 
 const inputRouter = Router()
@@ -27,5 +28,6 @@ inputRouter.use('/skills',UserMiddlware.CHECK_USER_LOGIN, SkillRouter)
 inputRouter.use('/users',UserMiddlware.CHECK_USER_LOGIN, UserRouter)
 inputRouter.use('/formats',UserMiddlware.CHECK_USER_LOGIN, FormatRouter)
 inputRouter.use('/projects',UserMiddlware.CHECK_USER_LOGIN, ProjectRouter)
+inputRouter.use('/projects/versions',UserMiddlware.CHECK_USER_LOGIN, VersionRouter)
 
 export default inputRouter

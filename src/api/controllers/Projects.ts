@@ -12,7 +12,7 @@ class ProjectController{
     async CreateProject(req:UploadWithFileRequest,res:Response){//create project controller
         try {
             if(!res.locals.user || req.files.length > 1)throw new Error(ErrorEnum[403])
-            let project = await service.CreateProject(req.body,req.files.file)
+            let project = await service.CreateProject(req.body,req.files.file,res.locals?.token)
 
             if(project.id) delete project.id;
             return res.status(201).json(project)

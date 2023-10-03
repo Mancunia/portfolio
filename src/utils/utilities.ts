@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken"
 import { Request } from 'express';
 import Config from '../db/config.js';
 import { ErrorEnum } from './error.js';
+import {v4 as uuidV4} from "uuid"
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -124,6 +125,20 @@ public static async DECODE_TOKEN(token:string): Promise<string>{
   }
     catch(error) {
     throw error
+    }
+  }
+
+  public static async GENERATE_UUID(): Promise<string>{
+    try {
+        let uuid = await uuidV4()
+    
+        if(!uuid){
+            uuid = await this.genRandCode()
+        }
+
+        return uuid
+    } catch (error) {
+        throw error
     }
   }
 

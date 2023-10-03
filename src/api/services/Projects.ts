@@ -22,17 +22,15 @@ class ProjectServices{
     }
 
 
-    async CreateProject(projectData:ProjectsInput,file:any):Promise<ProjectsOutput> {//TODO: create new project
+    async CreateProject(projectData:ProjectsInput,file:any,user:string):Promise<ProjectsOutput> {//TODO: create new project
         try {
             /*TODO: install uuid from https://www.npmjs.com/package/uuid 
             generate uuid for project before creating it, insert into payload @project_uuid
             */
            if(!projectData.project_name)throw new Error(ErrorEnum[403])
-            projectData.project_uuid = await uuidV4();//get uuid for project
-           if(!projectData.project_uuid){// if project_uuid is not provided then get from custom uuid
-            projectData.project_uuid = await Utility.genRandCode()
-            }
-
+            projectData.project_uuid = await Utility.GENERATE_UUID()//get uuid for project
+           
+            projectData.project_users = user
             if(projectData.project_role) projectData.project_role = (await this.CheckRole(projectData.project_role)).id
             //move image to project/project_name-files folder
             this.projectDir += "/" + projectData.project_name // attach project name to base Directory
@@ -143,7 +141,7 @@ private async MoveFile(file:any): Promise<string> {
 private async CheckRole(roleID:string|number): Promise<{id:number,role:string}> {
     try {
         let role = await (new RolesRepository()).getRole(roleID)
-        return {id:role.id,role:role.role}
+        return role
         
     } catch (error) {
         throw error

@@ -10,8 +10,6 @@ interface Project_Version_attribute{
     version_name:string;
     version_description:string;
     deactivated_at:Date;
-    created_at?:Date;
-    updated_at?:Date;
     
 }
 
@@ -55,7 +53,7 @@ Project_Version.init({
     },
     deactivated_at: {
         type: DataTypes.DATE,
-        allowNull:false
+        allowNull:true
     }
 },{
     timestamps:true,

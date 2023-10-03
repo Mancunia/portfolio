@@ -76,7 +76,8 @@ Projects.init({
         allowNull:false
     },
     project_users: {
-        type:DataTypes.INTEGER
+        type:DataTypes.INTEGER,
+        allowNull: false
     },
     deactivated_at:{
         type:DataTypes.DATE
