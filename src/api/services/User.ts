@@ -1,7 +1,7 @@
 import UserRepository from "../../db/repo/User.js";
 import { UserInput,UserOutput } from "../../db/models/User.js";
 import Utility,{loggerStatements} from "../../utils/utilities.js";
-import { ErrorEnum } from "../../utils/error.js";
+import ErrorHandler, { ErrorEnum } from "../../utils/error.js";
 import bcrypt from "bcrypt"
 
 interface userRequests {
@@ -13,14 +13,16 @@ interface userRequests {
 class UserService{
     private Repo: UserRepository;
     private final:string
+    private error:ErrorHandler
 
     constructor(){
         this.Repo = new UserRepository();
+        this.error = new ErrorHandler()
     }
 
     async CreateUser(userData: UserInput): Promise<boolean>{//Create User
         try {
-            if(!userData.user_name || !userData.user_email || !userData.user_password) throw new Error(ErrorEnum[403])
+            if(!userData.user_name || !userData.user_email || !userData.user_password) throw await this.error.CustomError(ErrorEnum[403],"Invalid User details")
             
             userData.user_password = await bcrypt.hash(userData.user_password,10)
             let user = await this.Repo.newUser(userData);
@@ -39,7 +41,7 @@ class UserService{
 
     async Login(userID:userRequests):Promise<UserOutput|any>{//Fetch User
         try {
-            if(!userID) throw new Error(ErrorEnum[403]);
+            if(!userID) throw await this.error.CustomError(ErrorEnum[403],"Invalid User ID");
             let user = await this.Repo.getAUserByEmail(userID.user_name);
 
             //check if user password exists

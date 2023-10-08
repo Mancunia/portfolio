@@ -7,16 +7,17 @@ import { UploadRequest as UploadWithFileRequest } from "../../utils/utilities.js
 const errorHandler = new ErrorHandler()
 const services = new FormatService()
 
-class FormatController{
 
+class FormatController{
     async CreateFormat (req: UploadWithFileRequest, res: Response){//create controller
         try {
-            if(!res.locals.user || req.files.length > 1) throw new Error(ErrorEnum[403]);
+            if(!res.locals.user ) throw await errorHandler.CustomError(ErrorEnum[403],"Invalid User")
+            if(req.files.length > 1) throw await errorHandler.CustomError(ErrorEnum[403],"Too many files")
             let format = await services.CreateFormat(req.body,req.files.file);
             return res.status(201).json(format);
         } catch (error) {
             console.log('error:',error);
-            let errors:[number,string,string] = await errorHandler.HandleError(error.message)
+            let errors:[number,string,string] = await errorHandler.HandleError(error?.errorCode,error?.message)
             return res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
     }
@@ -27,7 +28,7 @@ class FormatController{
         return res.status(200).json(format);
         
     } catch (error) {
-        let errors:[number,string,string] = await errorHandler.HandleError(error.message)
+        let errors:[number,string,string] = await errorHandler.HandleError(error?.errorCode,error?.message)
         return res.status(errors[0]).json({error: errors[1],message:errors[2]})
     }
     }
@@ -38,8 +39,8 @@ class FormatController{
             return res.status(200).json(formats)
             
         } catch (error) {
-            let errors:[number,string,string] = await errorHandler.HandleError(error.message)
-        return res.status(errors[0]).json({error: errors[1],message:errors[2]})
+            let errors:[number,string,string] = await errorHandler.HandleError(error?.errorCode,error?.message)
+            return res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
     }
 
@@ -49,8 +50,8 @@ class FormatController{
             let format = await services.UpdateFormat(Number(req.params.id),req.body,req.files.file)
             return res.status(200).json(format)
         } catch (error) {
-            let errors:[number,string,string] = await errorHandler.HandleError(error.message)
-        return res.status(errors[0]).json({error: errors[1],message:errors[2]})
+            let errors:[number,string,string] = await errorHandler.HandleError(error?.errorCode,error?.message)
+            return res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
     }
 
@@ -60,8 +61,8 @@ class FormatController{
             let format = await services.DeleteFormat(Number(req.params.id))
             return res.status(200).json(format)
         } catch (error) {
-            let errors:[number,string,string] = await errorHandler.HandleError(error.message)
-        return res.status(errors[0]).json({error: errors[1],message:errors[2]})
+            let errors:[number,string,string] = await errorHandler.HandleError(error?.errorCode,error?.message)
+            return res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
     }
 }

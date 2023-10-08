@@ -1,21 +1,23 @@
 import SkillRepository from "../../db/repo/Skills.js";
 import { SkillInput,SkillOutput } from "../../db/models/Skills.js";
 import Utility,{loggerStatements} from "../../utils/utilities.js";
-import { ErrorEnum } from "../../utils/error.js";
+import ErrorHandler, { ErrorEnum } from "../../utils/error.js";
 
 class SkillService {
     private final:string
     private Repo:SkillRepository
+    private error:ErrorHandler
 
     //init
     constructor() {
         this.Repo = new SkillRepository()
+        this.error = new ErrorHandler()
     }
 
     //new skill
     async CreateSkill(skillData:SkillInput):Promise<SkillOutput>{
         try {
-            if (!skillData.skill_name)throw new Error(ErrorEnum[403])//missing required attribute
+            if (!skillData.skill_name)throw await this.error.CustomError(ErrorEnum[403],"Invalid Skill name")//missing required attribute
 
             let skill = await this.Repo.newSkill(skillData);
             
@@ -36,7 +38,7 @@ class SkillService {
     //get skill
     async GetSkill(skillID:number):Promise<SkillOutput>{
         try {
-            if(!skillID) throw new Error(ErrorEnum[403])//missing skillID
+            if(!skillID) throw await this.error.CustomError(ErrorEnum[403],"Invalid Skill ID")//missing skillID
             let skill = await this.Repo.getSkill(skillID);
             this.final = `${loggerStatements[4]} ${skill.skill_name} @ ${Utility.getDate()}`
             return skill
@@ -70,7 +72,7 @@ class SkillService {
     //update skill
     async UpdateSkill(skillID:number,skillData:SkillInput):Promise<SkillOutput>{
         try {
-            if(!skillID || !skillData.skill_name) throw new Error(ErrorEnum[403])//missing required parameter
+            if(!skillID) throw await this.error.CustomError(ErrorEnum[403],"Invalid Skill ID")//missing required parameter
             let skill = await this.Repo.updateSkill(skillID,skillData)
 
             this.final = `${loggerStatements[2]} skill with id:${skill.id} from ${skillData.skill_name} to ${skill.skill_name} @ ${Utility.getDate()}`
@@ -88,7 +90,7 @@ class SkillService {
     //delete a skill
     async DeleteSkill(skillID:number):Promise<number> {
         try {
-            if(!skillID) throw new Error(ErrorEnum[403])//missing required parameter
+            if(!skillID) throw await this.error.CustomError(ErrorEnum[403],"Invalid Skill ID")//missing required parameter
             let skill:number = await this.Repo.deleteSkill(skillID)
             this.final = `${loggerStatements[3]} skill with id:${skillID} @ ${Utility.getDate()}`
             return skill

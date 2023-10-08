@@ -9,18 +9,18 @@ class SkillController{
 
     async CreateSkill(req: Request, res: Response){//create skill
         try {
-            if(res.locals.user) throw new Error(ErrorEnum[403])
+            if(res.locals.user) throw await errorHandler.CustomError(ErrorEnum[403],"Invalid user")
             let skill = await skillService.CreateSkill(req.body);
             res.status(201).json(skill);
         } catch (error) {
-            let errors:[number,string,string?] = await errorHandler.HandleError(error.message)
+            let errors:[number,string,string?] = await errorHandler.HandleError(error?.errorCode,error?.message)
             res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
     }
 
     async UpdateSkill(req: Request, res: Response){//update skill
     try {
-        if(res.locals.user) throw new Error(ErrorEnum[403])
+        if(res.locals.user) throw await errorHandler.CustomError(ErrorEnum[403],"Invalid user")
         let skillID = Number(req.params.id);
         let skill = req.body
         skill = await skillService.UpdateSkill(skillID, skill);
@@ -28,7 +28,7 @@ class SkillController{
         res.status(200).json(skill);
 
     } catch (error) {
-        let errors:[number,string,string?] = await errorHandler.HandleError(error.message)
+        let errors:[number,string,string?] = await errorHandler.HandleError(error?.errorCode,error?.message)
         res.status(errors[0]).json({error: errors[1],message:errors[2]})
     }
     }
@@ -40,7 +40,7 @@ class SkillController{
         let skill = await skillService.GetSkill(skillID)
             res.status(200).json(skill)
         }catch(error){
-            let errors:[number,string,string?] = await errorHandler.HandleError(error.message)
+            let errors:[number,string,string?] = await errorHandler.HandleError(error?.errorCode,error?.message)
             res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
     }
@@ -51,7 +51,7 @@ class SkillController{
             res.status(200).json(skills)
             
         } catch (error) {
-            let errors:[number,string,string?] = await errorHandler.HandleError(error.message)
+            let errors:[number,string,string?] = await errorHandler.HandleError(error?.errorCode,error?.message)
             res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
 
@@ -59,14 +59,14 @@ class SkillController{
 
     async DeleteSkill(req:Request,res:Response){//Delete skill
         try{
-            if(res.locals.user) throw new Error(ErrorEnum[403])
+            if(res.locals.user) throw await errorHandler.CustomError(ErrorEnum[403],"Invalid user")
             let skill = Number(req.params.id);
             skill = await skillService.DeleteSkill(skill)
 
             res.status(200).json(skill)
 
         }catch(error){
-            let errors:[number,string,string?] = await errorHandler.HandleError(error.message)
+            let errors:[number,string,string?] = await errorHandler.HandleError(error?.errorCode,error?.message)
             res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
 

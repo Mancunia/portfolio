@@ -1,5 +1,5 @@
 import RolesModel,{RoleInput,RoleOutput} from "../models/Roles.js";
-import { ErrorEnum } from "../../utils/error.js";
+import ErrorHandler, { ErrorEnum } from "../../utils/error.js";
 import { Op } from "sequelize";
 
 interface RolesRepo_attributes{
@@ -11,7 +11,10 @@ interface RolesRepo_attributes{
 }
 
 class RolesRepository implements RolesRepo_attributes{
-
+    private error: ErrorHandler
+    constructor(){
+        this.error = new ErrorHandler()
+    }
     //----------------------------------------------------------------Create a new role ----------------------------------------------------
     async newRole(roleInput:RoleInput):Promise<RoleOutput>{
         try {
@@ -20,7 +23,7 @@ class RolesRepository implements RolesRepo_attributes{
 
         } catch (error) {
            if(error.name === "SequelizeUniqueConstraintError") {
-            throw Error(ErrorEnum[401])
+            throw await this.error.CustomError(ErrorEnum[401],"Role must be unique")
             }
             throw error;
         }
@@ -40,7 +43,7 @@ class RolesRepository implements RolesRepo_attributes{
 
         } catch (error) {
             if(error.name === "SequelizeUniqueConstraintError") {
-                throw Error(ErrorEnum[401])
+                throw await this.error.CustomError(ErrorEnum[401],"Role must be unique")
                 }
             throw error;
         }
@@ -54,7 +57,7 @@ class RolesRepository implements RolesRepo_attributes{
             return role
     }
     catch(error){
-        throw error;
+        throw await this.error.CustomError(ErrorEnum[400],"Error deleting role")
     }
     }
 
@@ -67,7 +70,7 @@ class RolesRepository implements RolesRepo_attributes{
                   { role: roleID },
                 ],
               },});
-            if(!role)throw new Error(ErrorEnum[404])
+            if(!role)throw await this.error.CustomError(ErrorEnum[404],"Role Not Found")
             return role;
         } catch (error) {
             throw error;
@@ -78,7 +81,7 @@ class RolesRepository implements RolesRepo_attributes{
     async getAllRoles(): Promise<RoleOutput[]>{
         try {
             let roles:RoleOutput[] = await RolesModel.findAll()
-            if(!roles)throw new Error(ErrorEnum[404])
+            if(!roles)throw await this.error.CustomError(ErrorEnum[404],"Roles not Found")
             return roles;
         } catch (error) {
             throw error;
@@ -86,10 +89,6 @@ class RolesRepository implements RolesRepo_attributes{
         
         
     }
-
-
-
-
 }
 
 export default RolesRepository

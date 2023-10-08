@@ -1,5 +1,5 @@
 import Projects,{ProjectsInput,ProjectsOutput} from "../models/Projects.js";
-import { ErrorEnum } from "../../utils/error.js";
+import ErrorHandler, { ErrorEnum } from "../../utils/error.js";
 
 interface Project_attributes {
     newProject:(projectData:ProjectsInput)=>Promise<ProjectsOutput>;
@@ -10,6 +10,10 @@ interface Project_attributes {
 }
 
 class ProjectsRepository implements Project_attributes {
+    private error: ErrorHandler
+    constructor(){
+        this.error = new ErrorHandler()
+    }
 
     //------------------------------------New Project ----------------------------------------------------------------
     async newProject(projectData: ProjectsInput) : Promise<ProjectsOutput>{
@@ -19,9 +23,9 @@ class ProjectsRepository implements Project_attributes {
             
         } catch (error) {
             if(error.name === "SequelizeUniqueConstraintError") {
-                throw Error(ErrorEnum[401])
+                throw await this.error.CustomError(ErrorEnum[401],`Project with name ${projectData.project_name} exists already`)
                 }
-                throw error;
+                throw await this.error.CustomError(ErrorEnum[400],`Error creating project`)
         }
     }
 
@@ -29,7 +33,7 @@ class ProjectsRepository implements Project_attributes {
     async getProject(projectID: string): Promise<ProjectsOutput>{
         try {
             let project = await Projects.findOne({where:{project_uuid: projectID}})
-            if (!project) throw Error(ErrorEnum[404])
+            if (!project) throw await this.error.CustomError(ErrorEnum[404],`Project Not Found`)
             return project
         } catch (error) {
             throw error
@@ -40,7 +44,7 @@ class ProjectsRepository implements Project_attributes {
     async getProjects(): Promise<ProjectsOutput[]>{
         try {
             let project = await Projects.findAll()
-            if (!project) throw Error(ErrorEnum[404])
+            if (!project)  throw await this.error.CustomError(ErrorEnum[404],`Projects Not Found`)
             return project
         } catch (error) {
             throw error
@@ -58,7 +62,7 @@ class ProjectsRepository implements Project_attributes {
 
         } catch (error) {
             if(error.name === "SequelizeUniqueConstraintError") {
-                throw Error(ErrorEnum[401])
+                throw await this.error.CustomError(ErrorEnum[401],`Project name has to be unique`)
                 }
                 throw error;
         }
@@ -72,7 +76,7 @@ class ProjectsRepository implements Project_attributes {
             return project.project_name
             
         } catch (error) {
-            throw error
+            throw await this.error.CustomError(ErrorEnum[401],`Project could not be deleted`)
         }
     }
 }

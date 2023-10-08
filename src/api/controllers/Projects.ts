@@ -11,7 +11,7 @@ class ProjectController{
 
     async CreateProject(req:UploadWithFileRequest,res:Response){//create project controller
         try {
-            if(!res.locals.user || req.files.length > 1)throw new Error(ErrorEnum[403])
+            if(!res.locals.user || req.files.length > 1)throw await errorHandler.CustomError(ErrorEnum[403],"You must be logged in")
             let project = await service.CreateProject(req.body,req.files.file,res.locals?.token)
 
             if(project.id) delete project.id;
@@ -19,7 +19,7 @@ class ProjectController{
 
         } catch (error) {
             console.error(error)
-            let errors:[number,string,string] = await errorHandler.HandleError(error.message)
+            let errors:[number,string,string] = await errorHandler.HandleError(error?.errorCode,error?.message)
             return res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
     }
@@ -32,7 +32,7 @@ class ProjectController{
             return res.status(200).json(project)
             
         } catch (error) {
-            let errors:[number,string,string] = await errorHandler.HandleError(error.message)
+            let errors:[number,string,string] = await errorHandler.HandleError(error?.errorCode,error?.message)
             return res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
     }
@@ -49,20 +49,20 @@ class ProjectController{
             return res.status(200).json(project)
 
     } catch (error) {
-        let errors:[number,string,string] = await errorHandler.HandleError(error.message)
+        let errors:[number,string,string] = await errorHandler.HandleError(error?.errorCode,error?.message)
         return res.status(errors[0]).json({error: errors[1],message:errors[2]})
     }
     }
 
     async DeleteProject(req: Request, res: Response){//delete project
     try {
-        if(!res.locals.user) throw new Error(ErrorEnum[403])
+        if(!res.locals.user) throw await errorHandler.CustomError(ErrorEnum[403],"You must be logged in")
         let project = await service.DeleteProject(req.params.id)
         
         return res.status(200).json(project)
         
     }catch (error) {
-        let errors:[number,string,string] = await errorHandler.HandleError(error.message)
+        let errors:[number,string,string] = await errorHandler.HandleError(error?.errorCode,error?.message)
         return res.status(errors[0]).json({error: errors[1],message:errors[2]})
     }
     
@@ -70,7 +70,7 @@ class ProjectController{
 
     async UpdateProject(req:UploadWithFileRequest, res:Response){//update project
         try {
-            if(!res.locals.user )throw new Error(ErrorEnum[403])//check for user session cookie
+            if(!res.locals.user )throw await errorHandler.CustomError(ErrorEnum[403],"You must be logged in")//check for user session cookie
             if(req.files){
                 if(req.files.length > 1) throw new Error(ErrorEnum[403])
             }
@@ -83,7 +83,7 @@ class ProjectController{
             
         } catch (error) {
             console.log(error)
-            let errors:[number,string,string] = await errorHandler.HandleError(error.message)
+            let errors:[number,string,string] = await errorHandler.HandleError(error?.errorCode,error?.message)
             return res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
     }

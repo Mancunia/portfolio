@@ -9,7 +9,7 @@ class VersionController{
 
     async CreateVersion(req: Request, res: Response){//create version
         try {
-            if(!res.locals.user) throw new Error(ErrorEnum[403])
+            if(!res.locals.user) throw await errorHandler.CustomError(ErrorEnum[403],"You must be logged in")
             let project = req.params.project//cast to number
             let versionData = req.body
             let version = await Service.CreateVersion(versionData, project)
@@ -24,15 +24,14 @@ class VersionController{
             }})
             
         } catch (error) {
-            console.log(error)
-            let errors:[number,string,string] = await errorHandler.HandleError(error.message,"Error creating new Version")
+            let errors:[number,string,string] = await errorHandler.HandleError(error?.errorCode,error?.message)
             return res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
     }
 
     async GetVersions(req: Request, res: Response){//get all versions
         try {
-            if(!res.locals.user) throw new Error(ErrorEnum[403])
+            if(!res.locals.user) throw await errorHandler.CustomError(ErrorEnum[403],"You must be logged in")
             let project = req.params.project
 
             let versions = await Service.GetAllVersion(project)
@@ -41,14 +40,14 @@ class VersionController{
             
         } catch (error) {
             console.log(error)
-            let errors:[number,string,string] = await errorHandler.HandleError(error.message,`Error fetching Versions for project with ID:${req.params.project}`)
+            let errors:[number,string,string] = await errorHandler.HandleError(error?.errorCode,error?.message)
             return res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
     }
 
     async GetAVersion(req: Request, res: Response){//get a single version
         try {
-            if(!res.locals.user) throw new Error(ErrorEnum[403])
+            if(!res.locals.user) throw await errorHandler.CustomError(ErrorEnum[403],"You must be logged in")
             let id = req.params.id
 
             let versions = await Service.GetVersion(id)
@@ -57,14 +56,14 @@ class VersionController{
             
         } catch (error) {
             console.log(error)
-            let errors:[number,string,string] = await errorHandler.HandleError(error.message,`Error fetching Version with ID:${req.params.id}`)
+            let errors:[number,string,string] = await errorHandler.HandleError(error?.errorCode,error?.message)
             return res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
     }
 
     async UpdateAVersion(req: Request, res: Response){//update a single
     try {
-        if(!res.locals.user) throw new Error(ErrorEnum[403])
+        if(!res.locals.user) throw await errorHandler.CustomError(ErrorEnum[403],"You must be logged in")
         let id = req.params.id
         let versionData = req.body
 
@@ -74,21 +73,21 @@ class VersionController{
         
     } catch (error) {
         console.log(error)
-            let errors:[number,string,string] = await errorHandler.HandleError(error.message,`Error updating version with ID:${req.params.id}`)
-            return res.status(errors[0]).json({error: errors[1],message:errors[2]})
+        let errors:[number,string,string] = await errorHandler.HandleError(error?.errorCode,error?.message)
+        return res.status(errors[0]).json({error: errors[1],message:errors[2]})
     }
     }
 
     async DeleteAVersion(req: Request, res: Response){//delete a single
     try {
-        if(!res.locals.user) throw new Error(ErrorEnum[403])
+        if(!res.locals.user) throw await errorHandler.CustomError(ErrorEnum[403],"You must be logged in")
         let id = req.params.id
         await Service.DeleteVersion(id);
         res.status(200).send("ok")
         
     } catch (error) {
         console.log(error)
-        let errors:[number,string,string] = await errorHandler.HandleError(error.message,`Error deleting version with ID:${req.params.id}`)
+        let errors:[number,string,string] = await errorHandler.HandleError(error?.errorCode,error?.message)
         return res.status(errors[0]).json({error: errors[1],message:errors[2]})
     }
     }

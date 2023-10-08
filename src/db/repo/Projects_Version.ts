@@ -1,5 +1,5 @@
 import Project_Version,{versionInput,versionOutput} from "../../db/models/Project_Versions.js";
-import { ErrorEnum } from "../../utils/error.js";
+import ErrorHandler,{ ErrorEnum } from "../../utils/error.js";
 
 interface version_description {
     createVersion:(versioinData:versionInput)=>Promise<versionOutput>;
@@ -11,6 +11,11 @@ interface version_description {
 
 class VersionRepository implements version_description{
 
+    private error: ErrorHandler
+    constructor(){
+        this.error = new ErrorHandler()
+    }
+
     //---------------------------------------------------------------- Create Version ------------------------------
     async createVersion(versioinData:versionInput): Promise<versionOutput>{
         try {
@@ -19,9 +24,9 @@ class VersionRepository implements version_description{
             return version
         } catch (error) {
             if(error.name === "SequelizeUniqueConstraintError") {
-                throw Error(ErrorEnum[401])
+                throw await this.error.CustomError(ErrorEnum[401],"Version name has to be unique")
                 }
-                throw error;
+                throw await this.error.CustomError(ErrorEnum[400],"Something went wrong");
         }
     }
 
@@ -29,7 +34,7 @@ class VersionRepository implements version_description{
     async getVersion(versioinID:string): Promise<versionOutput>{
         try {
             let version = await Project_Version.findOne({where:{version_uuid:versioinID}});
-            if(!version)throw new Error(ErrorEnum[404])
+            if(!version)throw await this.error.CustomError(ErrorEnum[404],"Version Not found")
             return version
             
         } catch (error) {
@@ -41,7 +46,7 @@ class VersionRepository implements version_description{
     async getAllVersions(projectID:number): Promise<versionOutput[]>{
         try {
             let versions = await Project_Version.findAll({where:{project_id:projectID}});
-            if(!versions)throw new Error(ErrorEnum[404])
+            if(!versions)throw await this.error.CustomError(ErrorEnum[404],"Versions Not available")
             return versions
             
         } catch (error) {
@@ -57,7 +62,10 @@ class VersionRepository implements version_description{
             return version
             
         } catch (error) {
-            throw error
+            if(error.name === "SequelizeUniqueConstraintError") {
+                throw await this.error.CustomError(ErrorEnum[401],"Version name has to be unique")
+                }
+                throw await this.error.CustomError(ErrorEnum[400],"Version counld not update, try again later 😊");
         }
     }
 

@@ -1,16 +1,18 @@
 import RolesRepository from "../../db/repo/Roles.js";
 import { RoleInput,RoleOutput } from "../../db/models/Roles.js";
 import Utility,{loggerStatements} from "../../utils/utilities.js";
-import { ErrorEnum } from "../../utils/error.js";
+import ErrorHandler, { ErrorEnum } from "../../utils/error.js";
 
 class RolesService {
     //create instance of Roles repository
      private final:string
      private Repo 
+     private error:ErrorHandler
 
     constructor(){
         this.Repo = new RolesRepository()
         this.final= ""
+        this.error = new ErrorHandler()
     }
     
 
@@ -20,7 +22,7 @@ class RolesService {
     //Create a new role
     async CreateRole(newRole:RoleInput):Promise<RoleOutput> {
         try {
-            if(!newRole.role) throw new Error(ErrorEnum[403])//missing required attribute
+            if(!newRole.role) await this.error.CustomError(ErrorEnum[403],"Invalid Role")//missing required attribute
             let role = await this.Repo.newRole(newRole)
             this.final = `${loggerStatements[1]} new role ${role.role} @ ${Utility.getDate()}`
              return role
@@ -54,7 +56,7 @@ class RolesService {
     //get one role
     async GetRole(roleID:number):Promise<RoleOutput>{
         try {
-            if(!roleID) throw new Error(ErrorEnum[403])
+            if(!roleID) throw await this.error.CustomError(ErrorEnum[403],"Invalid Role ID")
             let role = await this.Repo.getRole(roleID)
             this.final = `${loggerStatements[4]} role ${role.role} @ ${Utility.getDate()}`
             return role
@@ -74,7 +76,7 @@ class RolesService {
 
     async UpdateRole(roleID:number,roleData:RoleInput):Promise<RoleOutput>{//update a role
         try{
-            if(!roleID || !roleData.role) throw new Error(ErrorEnum[403])//if no role id
+            if(!roleID || !roleData.role) throw await this.error.CustomError(ErrorEnum[403],"Invalid Role ID or Data")//if no role id
 
             let role = await this.Repo.updateRole(roleID,roleData)
             this.final = `${loggerStatements[2]} role ${role.role} @ ${Utility.getDate()}`
@@ -93,7 +95,7 @@ class RolesService {
 
     async DeleteRole(roleID:number):Promise<number>{
         try {
-            if(!roleID) throw new Error(ErrorEnum[403])//if no role id
+            if(!roleID) throw await this.error.CustomError(ErrorEnum[403],"Invalid Role ID")//if no role id
 
             let role = await this.Repo.deleteRole(roleID)
             this.final = `${loggerStatements[3]} role ${role.role} @ ${Utility.getDate()}`

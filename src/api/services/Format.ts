@@ -1,16 +1,18 @@
 import FormatRepository from "../../db/repo/Format.js";
 import { FormatInput,FormatOutput } from "../../db/models/Format.js";
 import Utility,{loggerStatements} from "../../utils/utilities.js";
-import { ErrorEnum } from "../../utils/error.js";
+import ErrorHandler, { ErrorEnum } from "../../utils/error.js";
 
 
 class FormatService{
     private Repo: FormatRepository;
     private dir: string = "./public/"
     private final:string = "";
+    private error: ErrorHandler
 
     constructor(){
         this.Repo = new FormatRepository();
+        this.error = new ErrorHandler()
     }
 
     /*
@@ -21,7 +23,7 @@ class FormatService{
     */
     async CreateFormat(formatData:FormatInput,file:any = undefined): Promise<FormatOutput>{//new format
         try {
-            if(!formatData.format_name) throw new Error(ErrorEnum[403]);
+            if(!formatData.format_name) throw await this.error.CustomError(ErrorEnum[403],"Invalid format data")
 
             if(file){
                 formatData.format_icon = await this.MoveFile(file)
@@ -43,7 +45,7 @@ class FormatService{
 
     async GetFormat(formatID:number):Promise<FormatOutput>{//fetch a format
         try {
-            if(!formatID)throw new Error(ErrorEnum[403]);
+            if(!formatID)throw await this.error.CustomError(ErrorEnum[403],"Invalid format ID")
             let format = await this.Repo.getFormat(formatID)
 
             this.final = `${loggerStatements[2]} Format ${format.format_name} @ ${Utility.getDate()}`
@@ -75,7 +77,7 @@ class FormatService{
 
     async UpdateFormat(formatID:number,formatData:FormatInput,file:any = undefined):Promise<FormatOutput>{//update format
     try {
-        if (!formatID || !formatData.format_name) throw new Error(ErrorEnum[403])
+        if (!formatID || !formatData.format_name) throw await this.error.CustomError(ErrorEnum[403],"Invalid format data")
         if(file){
             formatData.format_icon = await this.MoveFile(file)
         }
@@ -93,7 +95,7 @@ class FormatService{
 
     async DeleteFormat(formatID:number):Promise<number>{//delete format
         try {
-            if(!formatID) throw new Error(ErrorEnum[403])
+            if(!formatID) throw await this.error.CustomError(ErrorEnum[403],"Invalid format data")
             formatID = await this.Repo.deleteFormat(formatID)
             this.final = `${loggerStatements[3]} format: ${formatID} @ ${Utility.getDate()}`
             return formatID
@@ -111,7 +113,7 @@ class FormatService{
             let fileLocation = await Utility.GET_DIRECTORY(file.name,this.dir)
                 console.log('fileLocation:',fileLocation)
                 file.mv(fileLocation,(err)=>{
-                    if(err)throw new Error(ErrorEnum[500]);
+                    if(err)throw this.error.CustomError(ErrorEnum[500],"Error moving file")
                 })
                 return fileLocation
             

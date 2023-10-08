@@ -1,5 +1,5 @@
 import Skill,{SkillInput,SkillOutput} from "../models/Skills.js";
-import { ErrorEnum } from "../../utils/error.js";
+import ErrorHandler, { ErrorEnum } from "../../utils/error.js";
 
 interface Skills_attributes{
     newSkill:(skill:SkillInput)=>Promise<SkillOutput>;
@@ -11,7 +11,10 @@ interface Skills_attributes{
 
 class SkillRepository implements Skills_attributes{
     //properties
-   
+    private error: ErrorHandler
+    constructor(){
+        this.error = new ErrorHandler()
+    }
     //---------------------------------------------------------------- ADD SKILL ------------------------------------------------
     async newSkill(skill: SkillInput):Promise<SkillOutput>{
         try {
@@ -19,7 +22,7 @@ class SkillRepository implements Skills_attributes{
             return newSkill   
         } catch (error) {
             if(error.name === "SequelizeUniqueConstraintError") {
-                throw Error(ErrorEnum[401])
+                throw await this.error.CustomError(ErrorEnum[401],"Skill must be unique")
                 }
                 throw error;
         }
@@ -31,7 +34,7 @@ class SkillRepository implements Skills_attributes{
     async getSkill(skillID: number):Promise<SkillOutput>{
         try{
             let skill:SkillOutput = await Skill.findOne({where:{id:skillID}})
-            if(!skill) throw Error(ErrorEnum[404])
+            if(!skill) throw await this.error.CustomError(ErrorEnum[404],"Skill not Found")
             return skill;
         }
         catch (error) {
@@ -48,7 +51,7 @@ class SkillRepository implements Skills_attributes{
             
         } catch (error) {
             if(error.name === "SequelizeUniqueConstraintError") {
-                throw Error(ErrorEnum[401])
+                throw await this.error.CustomError(ErrorEnum[401],"Skill must be unique")
                 }
             throw error;
         }
@@ -59,7 +62,7 @@ class SkillRepository implements Skills_attributes{
     async getAllSkills():Promise<SkillOutput[]>{
         try {
             let skills = await Skill.findAll();
-            if(!skills) throw Error(ErrorEnum[404])
+            if(!skills) throw await this.error.CustomError(ErrorEnum[404],"Skills not Found")
             return skills
         } catch (error) {
             throw error
@@ -74,7 +77,7 @@ class SkillRepository implements Skills_attributes{
 
             return await Skill.destroy({where:{id:skillID}})
         } catch (error) {
-            throw error
+            throw await this.error.CustomError(ErrorEnum[400],"Error deleting skill")
         }
     }
 

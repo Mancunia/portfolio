@@ -13,7 +13,7 @@ class UserController{
             if(user) res.status(201).json({success: true, message:"User created successfully"});
             
         } catch (error) {
-            let errors:[number,string,string?] = await errorHandler.HandleError(error.message)
+            let errors:[number,string,string?] = await errorHandler.HandleError(error?.errorCode,error?.message)
             res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
     }
@@ -21,7 +21,7 @@ class UserController{
     async SignIn(req: Request, res: Response){
         try {
             
-            if(res.locals.user) throw new Error(ErrorEnum[403])
+            if(res.locals.user) throw await errorHandler.CustomError(ErrorEnum[403],"Invalid User")
             
 
             let {userDetails,token} = await services.Login(req.body);
@@ -32,23 +32,21 @@ class UserController{
             
         } catch (error) {
             // console.log('error:',error)
-            let errors:[number,string,string?] = await errorHandler.HandleError(error.message)
+            let errors:[number,string,string?] = await errorHandler.HandleError(error?.errorCode,error?.message)
             res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
     }
 
     async SignOut(req: Request, res: Response) {
         try{
-            if(!res.locals.user) {
-                console.log('From logout',res.locals.user);
-                throw new Error(ErrorEnum[403])
-            }
+            if(!res.locals.user) throw await errorHandler.CustomError(ErrorEnum[403],"Invalid User")
+            
 
             res.cookie(Utility.SESSION,'',{maxAge:1,httpOnly:true});
             res.status(200).send("OK")
 
         }catch (error) {
-            let errors:[number,string,string?] = await errorHandler.HandleError(error.message)
+            let errors:[number,string,string?] = await errorHandler.HandleError(error?.errorCode,error?.message)
             res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
     }

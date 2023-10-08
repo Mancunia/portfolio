@@ -4,14 +4,14 @@ import { fileURLToPath } from 'url';
 import jwt from "jsonwebtoken"
 import { Request } from 'express';
 import Config from '../db/config.js';
-import { ErrorEnum } from './error.js';
+import ErrorHandler,{ ErrorEnum } from './error.js';
 import {v4 as uuidV4} from "uuid"
 
 const __filename = fileURLToPath(import.meta.url);
 
 export const __dirname = path.dirname(__filename);
 
-
+const errorHandler = new ErrorHandler()
 export interface UploadRequest extends Request {
     files:any
 }
@@ -53,7 +53,6 @@ class Utility{
             });
 
         } catch (error) {
-            this.logger("Internal Error")
             throw error.message
             
         }
@@ -67,7 +66,7 @@ public static async SessionToken(id:string): Promise<string>{
       expiresIn: Utility.SessionMaxAge
   });
     } catch (error) {
-       throw error; 
+       throw await errorHandler.CustomError(ErrorEnum[500],"Try again later 🙏🏼"); 
     }
   
 }
@@ -82,7 +81,7 @@ public static async DECODE_TOKEN(token:string): Promise<string>{
           
             await jwt.verify(token,Config.SECRET,(err,decodedToken)=>{
             if(err){
-                throw new Error(ErrorEnum[403]);
+                errorHandler.CustomError(ErrorEnum[403],"Invalid Token"); ;
             }
             else{
                
@@ -108,8 +107,7 @@ public static async DECODE_TOKEN(token:string): Promise<string>{
        
         return directory;
     } catch (error) {
-        console.log(error);
-        throw error
+        throw await errorHandler.CustomError(ErrorEnum[500],"Try again later 🙏🏼"); 
     }
   }
 
@@ -124,7 +122,7 @@ public static async DECODE_TOKEN(token:string): Promise<string>{
         return result
   }
     catch(error) {
-    throw error
+        throw await errorHandler.CustomError(ErrorEnum[500],"Try again later 🙏🏼"); 
     }
   }
 
@@ -138,7 +136,7 @@ public static async DECODE_TOKEN(token:string): Promise<string>{
 
         return uuid
     } catch (error) {
-        throw error
+       throw await errorHandler.CustomError(ErrorEnum[500],"Try again later 🙏🏼"); 
     }
   }
 

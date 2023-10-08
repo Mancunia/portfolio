@@ -1,9 +1,7 @@
 import ProjectsRepository from "../../db/repo/Projects.js";
 import { ProjectsInput,ProjectsOutput } from "../../db/models/Projects.js";
 import Utility,{loggerStatements} from "../../utils/utilities.js";
-import { ErrorEnum } from "../../utils/error.js";
-import {v4 as uuidV4} from "uuid"
-import RolesRepository from "../../db/repo/Roles.js";
+import ErrorHandler, { ErrorEnum } from "../../utils/error.js";
 import { existsSync } from "fs";
 
 class ProjectServices{
@@ -11,6 +9,7 @@ class ProjectServices{
     private repo: ProjectsRepository
     private projectDir: string
     private final:string
+    private error:ErrorHandler
     private readonly projectID: string
 
     constructor(projectID:string = null){
@@ -19,19 +18,19 @@ class ProjectServices{
             this.projectID = projectID
         }
         this.projectDir = this.BASE_DIR
+        this.error = new ErrorHandler()
     }
 
 
-    async CreateProject(projectData:ProjectsInput,file:any,user:string):Promise<ProjectsOutput> {//TODO: create new project
+    async CreateProject(projectData:ProjectsInput,file:any,user:string):Promise<ProjectsOutput> {//create new project
         try {
-            /*TODO: install uuid from https://www.npmjs.com/package/uuid 
+            /*
             generate uuid for project before creating it, insert into payload @project_uuid
             */
-           if(!projectData.project_name)throw new Error(ErrorEnum[403])
+           if(!projectData.project_name)throw await this.error.CustomError(ErrorEnum[403],"project_name cannot be empty")
             projectData.project_uuid = await Utility.GENERATE_UUID()//get uuid for project
            
             projectData.project_users = user
-            if(projectData.project_role) projectData.project_role = (await this.CheckRole(projectData.project_role)).id
             //move image to project/project_name-files folder
             this.projectDir += "/" + projectData.project_name // attach project name to base Directory
             projectData.project_dir = this.projectDir//replace project_link with new project directory in root folder ./projects
@@ -53,7 +52,7 @@ class ProjectServices{
 
 async DeleteProject(project:string = this.projectID):Promise<string> {// delete project
     try {
-        if(!project) throw new Error(ErrorEnum[403])
+        if(!project) throw await this.error.CustomError(ErrorEnum[403],"Invalid project ID")
         let projectID = await this.repo.deleteProject(project)
     this.final =`${loggerStatements[3]} Project with ID: ${projectID} @ ${Utility.getDate()}`
         return projectID
@@ -69,7 +68,7 @@ async DeleteProject(project:string = this.projectID):Promise<string> {// delete 
 
 async GetProject(projectID:string = this.projectID):Promise<ProjectsOutput>{//get a project
     try {
-        if(!projectID) throw new Error(ErrorEnum[403])
+        if(!projectID) throw await this.error.CustomError(ErrorEnum[403],"Invalid project ID")
         let project = await this.repo.getProject(projectID)
         this.final = `${loggerStatements[4]} Project: ${project.project_name} @ ${Utility.getDate()}`
         return project
@@ -98,7 +97,7 @@ async GetProjects():Promise<ProjectsOutput[]>{//get projects
 
 async UpdateProject(projectData:ProjectsInput,file:any,projectID:string = this.projectID):Promise<ProjectsOutput>{//Update a project
     try {
-        if(!projectID || !projectData.project_name) throw new Error(ErrorEnum[403])//missing project details    
+        if(!projectID || !projectData.project_name) await this.error.CustomError(ErrorEnum[403],"Invalid project ID or details")//missing project details    
 
         if(file){//check if file exists
         this.projectDir = (await this.repo.getProject(projectID)).project_dir//get project information
@@ -138,15 +137,7 @@ private async MoveFile(file:any): Promise<string> {
     }
 }
 
-private async CheckRole(roleID:string|number): Promise<{id:number,role:string}> {
-    try {
-        let role = await (new RolesRepository()).getRole(roleID)
-        return role
-        
-    } catch (error) {
-        throw error
-    }
-}
+
 
 }
 

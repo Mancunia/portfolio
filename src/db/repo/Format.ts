@@ -1,5 +1,5 @@
 import Format,{FormatInput,FormatOutput} from "../models/Format.js";
-import { ErrorEnum } from "../../utils/error.js";
+import ErrorHandler, { ErrorEnum } from "../../utils/error.js";
 
 interface Format_attribute{
     newFormat:(formatData:FormatInput)=>Promise<FormatOutput>;
@@ -11,6 +11,10 @@ interface Format_attribute{
 
 class FormatRepository implements Format_attribute{
     
+    private error: ErrorHandler
+    constructor(){
+        this.error = new ErrorHandler()
+    }
     //----------------------------------------------------------------New Format --------------------------------
     async newFormat(formatData: FormatInput): Promise<FormatOutput>{
         try {
@@ -18,9 +22,9 @@ class FormatRepository implements Format_attribute{
             return format
         } catch (error) {
              if(error.name === "SequelizeUniqueConstraintError") {
-            throw Error(ErrorEnum[401])
+            throw await this.error.CustomError(ErrorEnum[401],"Format name exist already")
             }
-            throw error;
+            throw await this.error.CustomError(ErrorEnum[400],"Error creating format")
         }
     }
 
@@ -29,13 +33,11 @@ class FormatRepository implements Format_attribute{
         try {
             let format = await Format.findOne({where: {id: formatID}})
 
-            if(!format)throw new Error(ErrorEnum[404])
+            if(!format)throw await this.error.CustomError(ErrorEnum[404],"Format not found")
             return format
             
         } catch (error) {
-            if(error.name === "SequelizeUniqueConstraintError") {
-                throw Error(ErrorEnum[401])
-                }
+            
                 throw error;
         }
     }
@@ -43,7 +45,7 @@ class FormatRepository implements Format_attribute{
     async getAllFormats(): Promise<FormatOutput[]>{
         try {
             let format = await Format.findAll()
-            if(!format)throw new Error(ErrorEnum[404])
+            if(!format)throw await this.error.CustomError(ErrorEnum[404],"Formats not found")
             return format
             
         } catch (error) {
@@ -62,9 +64,9 @@ class FormatRepository implements Format_attribute{
             
         } catch (error) {
             if(error.name === "SequelizeUniqueConstraintError") {
-                throw Error(ErrorEnum[401])
+                throw await this.error.CustomError(ErrorEnum[401],"Format name exists")
                 }
-                throw error;
+                throw await this.error.CustomError(ErrorEnum[400],"Error updating format")
         }
     }
 
@@ -79,7 +81,7 @@ class FormatRepository implements Format_attribute{
             return format.id
             
         } catch (error) {
-            throw error
+            throw await this.error.CustomError(ErrorEnum[400],"Format could not be deleted this time")
         }
     }
 

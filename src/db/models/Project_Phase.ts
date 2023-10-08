@@ -9,8 +9,6 @@ interface Project_Phase_attributes{
     phase_name:string;
     phase_description:string;
     deactivated_at:Date;
-    created_at?:Date;
-    updated_at?:Date;
 }
 //DTOs
 export interface PhaseInput extends Optional<Project_Phase_attributes,'id'|'deactivated_at'|'phase_description'> {}
@@ -23,8 +21,6 @@ class Project_Phase extends Model<Project_Phase_attributes, PhaseInput> implemen
     public phase_description: string;
 
     public readonly deactivated_at: Date;
-    public readonly created_at?: Date;
-    public readonly updated_at?: Date;
     
 }
 
