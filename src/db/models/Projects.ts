@@ -10,8 +10,6 @@ interface Projects_attributes{
     project_link: string;
     project_dir: string;
     project_logo: string;
-    project_role: number;
-    project_skills: string;
     project_users: any;
     deactivated_at: Date;
 }
@@ -28,8 +26,6 @@ class Projects extends Model<Projects_attributes, ProjectsInput> implements Proj
     public project_link: string;
     public project_dir: string;
     public project_logo: string;
-    public project_role: number;
-    public project_skills: string;
     public project_users: number;//foreign key
 
     public readonly project_uuid: string;
@@ -66,14 +62,6 @@ Projects.init({
     project_dir:{
         type:DataTypes.STRING,
         allowNull:true
-    },
-    project_role: {
-        type:DataTypes.INTEGER,
-        allowNull:false
-    },
-    project_skills: {
-        type:DataTypes.STRING,
-        allowNull:false
     },
     project_users: {
         type:DataTypes.INTEGER,

@@ -65,7 +65,7 @@ class VersionRepository implements version_description{
     async deleteVersion(versionID:string): Promise<number>{
         try {
             let version = await this.getVersion(versionID)
-            await Project_Version.destroy({where:{id:versionID}})
+            await Project_Version.destroy({where:{version_uuid:versionID}})
             return version.id
         } catch (error) {
             throw error

@@ -54,10 +54,10 @@ class VersionService{
 
      //-------------------------------------------------------------- Get All Versions ---------------------------------------
 
-     async GetAllVersion(projectID:number):Promise<versionOutput[]>{
+     async GetAllVersion(projectID:string):Promise<versionOutput[]>{
         try{
             if(!projectID)throw new Error(ErrorEnum[403])
-            let version = await this.repo.getAllVersions(projectID)
+            let version = await this.repo.getAllVersions((await this.getProject(projectID)).id)
             this.final =`${loggerStatements[4]} versions for project with ID: ${projectID} @ ${Utility.getDate()}`
             return version
         }catch (error) {
@@ -72,12 +72,12 @@ class VersionService{
      //-------------------------------------------------------------- Update a Version --------------------------------
      async UpdateVersion(versionID:string, versionData:versionInput):Promise<versionOutput>{
         try {
-            if(!versionID || !versionData.version_name || !versionData.project_id) throw new Error(ErrorEnum[403])
+            if(!versionID || !versionData.version_name || versionData?.project_id) throw new Error(ErrorEnum[403])
             let version = await this.repo.updateVersion(versionID, versionData)
             this.final =`${loggerStatements[2]} version with ID: ${version.version_uuid} @ ${Utility.getDate()}`
             return version
         }catch (error) {
-            this.final =`${loggerStatements[2.1]} version with ID: ${versionData} @ ${Utility.getDate()}`
+            this.final =`${loggerStatements[2.1]} version with ID: ${versionID} @ ${Utility.getDate()}`
             throw error
         }
         finally{
@@ -115,7 +115,3 @@ class VersionService{
 
 
 export default VersionService
-
-function uuidV4(): string | PromiseLike<string> {
-    throw new Error("Function not implemented.");
-}

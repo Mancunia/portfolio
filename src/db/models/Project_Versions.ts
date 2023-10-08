@@ -9,6 +9,8 @@ interface Project_Version_attribute{
     project_id:number;
     version_name:string;
     version_description:string;
+    version_role:number;
+    version_skills:string;
     deactivated_at:Date;
     
 }
@@ -23,6 +25,8 @@ class Project_Version extends Model<Project_Version_attribute,versionInput> impl
     public project_id: number;
     public version_name: string;
     public version_description: string;
+    public version_role: number;
+    public version_skills: string;
 
     public readonly deactivated_at: Date;
     
@@ -50,6 +54,14 @@ Project_Version.init({
     },
     version_description: {
         type:DataTypes.STRING
+    },
+    version_role: {
+        type:DataTypes.INTEGER,
+        allowNull:false
+    },
+    version_skills: {
+        type:DataTypes.STRING,
+        allowNull:false
     },
     deactivated_at: {
         type: DataTypes.DATE,

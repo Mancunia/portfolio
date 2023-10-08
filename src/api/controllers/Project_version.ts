@@ -7,7 +7,7 @@ const Service = new VersionService()
 
 class VersionController{
 
-    async CreateVersion(req: Request, res: Response){
+    async CreateVersion(req: Request, res: Response){//create version
         try {
             if(!res.locals.user) throw new Error(ErrorEnum[403])
             let project = req.params.project//cast to number
@@ -28,6 +28,69 @@ class VersionController{
             let errors:[number,string,string] = await errorHandler.HandleError(error.message,"Error creating new Version")
             return res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }
+    }
+
+    async GetVersions(req: Request, res: Response){//get all versions
+        try {
+            if(!res.locals.user) throw new Error(ErrorEnum[403])
+            let project = req.params.project
+
+            let versions = await Service.GetAllVersion(project)
+
+            return res.status(200).json(versions)
+            
+        } catch (error) {
+            console.log(error)
+            let errors:[number,string,string] = await errorHandler.HandleError(error.message,`Error fetching Versions for project with ID:${req.params.project}`)
+            return res.status(errors[0]).json({error: errors[1],message:errors[2]})
+        }
+    }
+
+    async GetAVersion(req: Request, res: Response){//get a single version
+        try {
+            if(!res.locals.user) throw new Error(ErrorEnum[403])
+            let id = req.params.id
+
+            let versions = await Service.GetVersion(id)
+
+            return res.status(200).json(versions)
+            
+        } catch (error) {
+            console.log(error)
+            let errors:[number,string,string] = await errorHandler.HandleError(error.message,`Error fetching Version with ID:${req.params.id}`)
+            return res.status(errors[0]).json({error: errors[1],message:errors[2]})
+        }
+    }
+
+    async UpdateAVersion(req: Request, res: Response){//update a single
+    try {
+        if(!res.locals.user) throw new Error(ErrorEnum[403])
+        let id = req.params.id
+        let versionData = req.body
+
+        let versions = await Service.UpdateVersion(id, versionData)
+
+        return res.status(200).json(versions)
+        
+    } catch (error) {
+        console.log(error)
+            let errors:[number,string,string] = await errorHandler.HandleError(error.message,`Error updating version with ID:${req.params.id}`)
+            return res.status(errors[0]).json({error: errors[1],message:errors[2]})
+    }
+    }
+
+    async DeleteAVersion(req: Request, res: Response){//delete a single
+    try {
+        if(!res.locals.user) throw new Error(ErrorEnum[403])
+        let id = req.params.id
+        await Service.DeleteVersion(id);
+        res.status(200).send("ok")
+        
+    } catch (error) {
+        console.log(error)
+        let errors:[number,string,string] = await errorHandler.HandleError(error.message,`Error deleting version with ID:${req.params.id}`)
+        return res.status(errors[0]).json({error: errors[1],message:errors[2]})
+    }
     }
 
 }
