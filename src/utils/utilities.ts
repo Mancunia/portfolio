@@ -140,6 +140,15 @@ public static async DECODE_TOKEN(token:string): Promise<string>{
     }
   }
 
+  public static FILE_DETAILS(file){
+    try {
+        let ext = (path.extname(file.name))
+        return { extension:ext}
+    } catch (error) {
+        
+    }
+  }
+
    
 }
 

@@ -7,6 +7,7 @@ import fileUpload from "express-fileupload"
 import Config from "./db/config.js";
 import dbInit from "./db/init.js";
 import cors from "cors"
+import Utility from "./utils/utilities.js";
 import inputRouter from "./api/input/routes/index.js";
 
 
@@ -63,6 +64,7 @@ config.connectToDBs().then(() => {
     console.log("DB Connected.......")
   }).catch(err => {
     //TODO: Add logging of error here
+    Utility.logger(`#CRITICAL Failed to connect to database message ${err.message} : ${err.stack}`)
     app.emit("error")
 });
 

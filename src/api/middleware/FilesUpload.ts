@@ -55,7 +55,6 @@ class FileUpload implements FileUpload_attributes {
         }
             next()
         } catch (error) {
-            console.log(error)
             let err = await errorHandler.HandleError(error,"Error checking file extensions");
             res.status(err[0]).json({error:err[1],message:err[2]})
         }
@@ -77,7 +76,6 @@ class FileUpload implements FileUpload_attributes {
                 if(files.size > size)FilesOverSizeLimit.push(files.name)
             }
 
-            console.log("files: ",FilesOverSizeLimit)
             if(FilesOverSizeLimit.length){ 
                 let overOne = FilesOverSizeLimit.length > 1
                 let message = `${overOne? "Files":"File"} ${FilesOverSizeLimit.toString()} ${overOne? "are":"is"} bigger than the allowed size`
@@ -88,7 +86,6 @@ class FileUpload implements FileUpload_attributes {
 
             next()
         } catch (error) {
-            console.log("error: ",error)
             let err = await errorHandler.HandleError(error,"Error checking file sizes");
             res.status(err[0]).json({error:err[1],message:err[2]})
         }

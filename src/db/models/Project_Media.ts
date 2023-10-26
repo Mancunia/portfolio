@@ -1,6 +1,5 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import Config from "../config.js";
-import Project_Section from "./Project_Section.js";
 
 interface Media_attributes {
     id:number;
@@ -13,7 +12,7 @@ interface Media_attributes {
 }
 
 //DTO
-export interface MediaInput extends Optional<Media_attributes,'id'|'media_type'>{}//input DTO
+export interface MediaInput extends Optional<Media_attributes,'id'|'media_preferred_height'|'media_preferred_width'|'deactivated_at'|'project_section_id'>{}//input DTO
 export interface MediaOutput extends Required<Media_attributes>{}//output DTO
 
 
