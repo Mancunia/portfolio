@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import Config from "../config.js";
+import Config from "../DBConfig.js";
 import Project_Phase from "./Project_Phase.js";
 
 //interface
@@ -61,7 +61,7 @@ Project_Version.init({
     },
     version_skills: {
         type:DataTypes.STRING,
-        allowNull:false
+        allowNull:true
     },
     deactivated_at: {
         type: DataTypes.DATE,

@@ -32,6 +32,7 @@ class VersionService{
             this.final =`${loggerStatements[1]} Version with name: ${versionData.version_name} @ ${Utility.getDate()}`
             return version
         } catch (error) {
+            console.log('error_service:',error)
             this.final =`${loggerStatements[1.1]} new version for project:${project_id} with title: ${versionData.version_name} @ ${Utility.getDate()}`
             throw error
         }

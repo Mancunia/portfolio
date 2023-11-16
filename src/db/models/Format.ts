@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import Config from "../config.js";
+import {singleInstance} from "../DBConfig.js";
 import Project_Section from "./Project_Section.js";
 
 interface Format_attributes{
@@ -39,7 +39,7 @@ Format.init({
     }
 },{
     timestamps:true,
-    sequelize:(new Config).getDatabaseConnection(),
+    sequelize:singleInstance.getDatabaseConnection(),
     paranoid:true,
     createdAt:"created_at",
     updatedAt:"updated_at",

@@ -24,6 +24,7 @@ class VersionController{
             }})
             
         } catch (error) {
+            console.log('error:',error)
             let errors:[number,string,string] = await errorHandler.HandleError(error?.errorCode,error?.message)
             return res.status(errors[0]).json({error: errors[1],message:errors[2]})
         }

@@ -22,6 +22,7 @@ class ProjectsRepository implements Project_attributes {
             return project
             
         } catch (error) {
+            console.log("in project repos",error)
             if(error.name === "SequelizeUniqueConstraintError") {
                 throw await this.error.CustomError(ErrorEnum[401],`Project with name ${projectData.project_name} exists already`)
                 }

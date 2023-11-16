@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import jwt from "jsonwebtoken"
 import { Request } from 'express';
-import Config from '../db/config.js';
+import Config from '../db/DBConfig.js';
 import ErrorHandler,{ ErrorEnum } from './error.js';
 import {v4 as uuidV4} from "uuid"
 

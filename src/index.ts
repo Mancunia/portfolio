@@ -4,7 +4,7 @@ import { ProfilingIntegration } from "@sentry/profiling-node";
 import cookieParser from "cookie-parser"
 import fileUpload from "express-fileupload"
 
-import Config from "./db/config.js";
+import Config from "./db/DBConfig.js";
 import dbInit from "./db/init.js";
 import cors from "cors"
 import Utility from "./utils/utilities.js";

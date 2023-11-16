@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import Config from "../config.js";
+import Config from "../DBConfig.js";
 import Media from "./Project_Media.js";
 
 interface Project_Section_attribute{

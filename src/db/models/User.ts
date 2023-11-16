@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import Config from "../config.js";
+import Config from "../DBConfig.js";
 import Projects from "./Projects.js";
 
 interface User_attribute {//user interface / protocol
@@ -12,7 +12,7 @@ interface User_attribute {//user interface / protocol
     deactivated_at: Date;
 }
 
-export interface UserInput extends Optional<User_attribute, 'id'|'user_lastName'|'user_firstName'> {}//role input DTO
+export interface UserInput extends Optional<User_attribute, 'id'|'user_lastName'|'user_firstName'|'deactivated_at'> {}//role input DTO
 export interface UserOutput extends Required<User_attribute> {}//role output DTO
 
 class User extends Model<User_attribute, UserInput> implements User_attribute{

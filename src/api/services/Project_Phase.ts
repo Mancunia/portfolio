@@ -57,7 +57,7 @@ class PhaseService {
         try {
             if (!versionID) throw this.error.CustomError(ErrorEnum[403],"Invalid version");
             let phases = await this.Repo.getAllPhase( (await this.getVerison(versionID)).id)
-
+            
             this.final= `${loggerStatements[4]} all phases for version with id ${versionID} @ ${Utility.getDate()}`
             return phases
         } catch (error) {

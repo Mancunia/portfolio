@@ -34,7 +34,7 @@ class PhaseRepository implements Phase_atttributes{
     async getPhase(phaseID:number):Promise<PhaseOutput>{
         try {
             let phase = await Project_Phase.findOne({where:{id: phaseID}})
-            if(!phase) throw await this.error.CustomError(ErrorEnum[4044],"Phase not found")
+            if(!phase) throw await this.error.CustomError(ErrorEnum[404],"Phase not found")
 
             return phase
             

@@ -23,6 +23,7 @@ class VersionRepository implements version_description{
            
             return version
         } catch (error) {
+            console.log('error_repo:',error)
             if(error.name === "SequelizeUniqueConstraintError") {
                 throw await this.error.CustomError(ErrorEnum[401],"Version name has to be unique")
                 }

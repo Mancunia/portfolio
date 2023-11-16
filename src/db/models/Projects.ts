@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional} from "sequelize";
-import Config from "../config.js";
+import Config from "../DBConfig.js";
 import Project_Version from "./Project_Versions.js";
 
 interface Projects_attributes{
@@ -10,12 +10,13 @@ interface Projects_attributes{
     project_link: string;
     project_dir: string;
     project_logo: string;
-    project_users: any;
     deactivated_at: Date;
 }
 
 //DTO
-export interface ProjectsInput extends Optional<Projects_attributes, 'id'|'project_description'|'project_link'|'project_logo'|'project_uuid'>{}//input DTO
+export interface ProjectsInput extends Optional<Projects_attributes, 'id'|'project_description'|'project_link'|'project_logo'|'project_uuid'>{
+    UserId: any;
+}//input DTO
 export interface ProjectsOutput extends Required<Projects_attributes>{}//output DTO
 
 class Projects extends Model<Projects_attributes, ProjectsInput> implements Projects_attributes{
@@ -26,7 +27,6 @@ class Projects extends Model<Projects_attributes, ProjectsInput> implements Proj
     public project_link: string;
     public project_dir: string;
     public project_logo: string;
-    public project_users: number;//foreign key
 
     public readonly project_uuid: string;
     public readonly deactivated_at: Date;
@@ -62,10 +62,6 @@ Projects.init({
     project_dir:{
         type:DataTypes.STRING,
         allowNull:true
-    },
-    project_users: {
-        type:DataTypes.INTEGER,
-        allowNull: false
     },
     deactivated_at:{
         type:DataTypes.DATE

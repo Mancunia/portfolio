@@ -30,7 +30,7 @@ class ProjectServices{
            if(!projectData.project_name)throw await this.error.CustomError(ErrorEnum[403],"project_name cannot be empty")
             projectData.project_uuid = await Utility.GENERATE_UUID()//get uuid for project
            
-            projectData.project_users = user
+            projectData.UserId = user
             //move image to project/project_name-files folder
             this.projectDir += "/" + projectData.project_name // attach project name to base Directory
             projectData.project_dir = this.projectDir//replace project_link with new project directory in root folder ./projects

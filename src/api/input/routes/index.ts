@@ -3,7 +3,7 @@ import RolesRouter from './RolesRoutes.js';
 import SkillRouter from './SkillsRoutes.js';
 import UserRouter from './UsersRoutes.js';
 import FormatRouter from './Format.js';
-import Config from '../../../db/config.js';
+import Config from '../../../db/DBConfig.js';
 import UserMiddlware from '../../middleware/User.js';
 import ProjectRouter from './ProjectRoutes.js';
 import VersionRouter from './VersionRoutes.js';
