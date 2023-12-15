@@ -87,6 +87,7 @@ class FormatService{
         
     } catch (error) {
         this.final = `${loggerStatements[4.1]} format: ${formatID} @ ${Utility.getDate()}`
+        throw error
     }
     finally{
         await Utility.logger(this.final)
@@ -102,6 +103,7 @@ class FormatService{
             
         } catch (error) {
             this.final = `${loggerStatements[3.1]} format: ${formatID} @ ${Utility.getDate()}`
+            throw error
         }
         finally{
             await Utility.logger(this.final)
