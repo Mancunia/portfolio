@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import jwt from "jsonwebtoken"
 import { Request } from 'express';
-import Config from '../db/DBConfig.js';
+import { serverSecret,serverLogFile } from './env.js';
 import ErrorHandler,{ ErrorEnum } from './error.js';
 import {v4 as uuidV4} from "uuid"
 
@@ -42,7 +42,7 @@ class Utility{
     }
 
     public static async logger(message: string){
-        const file = Config.File
+        const file = serverLogFile
         message ="#"+message+"\n"
     
         try {
@@ -62,7 +62,7 @@ class Utility{
 
 public static async SessionToken(id:string): Promise<string>{
     try {
-        return await jwt.sign({id},Config.SECRET,{
+        return await jwt.sign({id},serverSecret,{
       expiresIn: Utility.SessionMaxAge
   });
     } catch (error) {
@@ -79,7 +79,7 @@ public static async DECODE_TOKEN(token:string): Promise<string>{
   
         try{
           
-            await jwt.verify(token,Config.SECRET,(err,decodedToken)=>{
+            await jwt.verify(token,serverSecret,(err,decodedToken)=>{
             if(err){
                 errorHandler.CustomError(ErrorEnum[403],"Invalid Token"); ;
             }

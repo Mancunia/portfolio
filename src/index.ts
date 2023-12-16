@@ -3,12 +3,14 @@ import * as Sentry from "@sentry/node";
 import { ProfilingIntegration } from "@sentry/profiling-node";
 import cookieParser from "cookie-parser"
 import fileUpload from "express-fileupload"
+import cors from "cors"
 
 import Config from "./db/DBConfig.js";
 import dbInit from "./db/init.js";
-import cors from "cors"
+
 import Utility from "./utils/utilities.js";
 import inputRouter from "./api/input/routes/index.js";
+import { serverPort as PORT } from "./utils/env.js";
 
 
 let config = new Config();
@@ -72,7 +74,7 @@ config.connectToDBs().then(() => {
 //Start server after connection
 app.on("ready", () => {
     try {
-      app.listen(Config.PORT, () => console.log(`Server running on ${Config.PORT}...`));
+      app.listen(PORT, () => console.log(`Server running on ${PORT}...`));
     } catch (error) {
       console.log(`Error occurred: ${error.message}`);
     }

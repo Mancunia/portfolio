@@ -1,26 +1,17 @@
 import { Dialect,Sequelize } from "sequelize";
-import "dotenv/config";
+import { dbName,dbUser,dbPassword,dbDriver,dbHost } from "../utils/env.js";
 
 export const ALLOWED:string[] = JSON.parse(process.env.ALLOWED_HOSTS as string)
 
 class Config {
-  static dbName = process.env.DB_NAME as string;
-  static dbUser = process.env.DB_USER as string;
-  static dbHost = process.env.DB_HOST as string;
-  static dbDriver = process.env.DB_DRIVER as Dialect;
-  static dbPassword = process.env.DB_PASSWORD as string;
-
-  public static PORT = Number(process.env.PORT as string);
-  public static File = process.env.FILE as string;
-  public static SECRET = process.env.SECRET as string;
-  public static ENVIRONMENT = process.env.NODE_ENV as string;
+  
 
   private sequelizeConnection: Sequelize
 
   constructor() {
-    this.sequelizeConnection = new Sequelize(Config.dbName,Config.dbUser,Config.dbPassword,{
-      host:Config.dbHost,
-      dialect:Config.dbDriver,
+    this.sequelizeConnection = new Sequelize(dbName,dbUser,dbPassword,{
+      host:dbHost,
+      dialect:dbDriver as Dialect,
       logging:true
     })
   } 

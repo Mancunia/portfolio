@@ -1,9 +1,10 @@
 import { Router,Request,Response } from 'express'
+import { serverPort } from '../../../utils/env.js';
+
 import RolesRouter from './RolesRoutes.js';
 import SkillRouter from './SkillsRoutes.js';
 import UserRouter from './UsersRoutes.js';
 import FormatRouter from './Format.js';
-import Config from '../../../db/DBConfig.js';
 import UserMiddlware from '../../middleware/User.js';
 import ProjectRouter from './ProjectRoutes.js';
 import VersionRouter from './VersionRoutes.js';
@@ -18,7 +19,7 @@ inputRouter.get("/", async (req: Request, res: Response): Promise<Response> => {
     return res.status(200).json({
       message: 'Welcome to my Portfolio API!',
       endpoints:{
-        staging:`http://localhost:${Config.PORT}/apiWrite/`,
+        staging:`http://localhost:${serverPort}/apiWrite/`,
         production:'coming soon....'
       },
       version:"1.0"
