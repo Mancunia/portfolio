@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import type { PortfolioData } from "./types";
+import { OWNER_NAME, OWNER_TITLE, OWNER_LOCATION, PORTRAIT_TONE } from "./site.config";
 
 function getServiceClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -38,12 +39,12 @@ export async function fetchPortfolioData(): Promise<PortfolioData> {
 
   return {
     profile: {
-      name: profile?.name ?? "Emmanuel Osei Mensah",
-      title: profile?.title ?? "Full-stack engineer",
-      location: profile?.location ?? "Accra · remote",
+      name: profile?.name ?? OWNER_NAME,
+      title: profile?.title ?? OWNER_TITLE,
+      location: profile?.location ?? OWNER_LOCATION,
       blurb: profile?.blurb ?? "",
       portrait: profile?.portrait_url ?? "",
-      portraitTone: profile?.portrait_tone ?? "#3a4a4a",
+      portraitTone: profile?.portrait_tone ?? PORTRAIT_TONE,
       email: profile?.email ?? "",
     },
     social: ((social ?? []) as Array<{ id: string; label: string; handle: string; url: string }>).map(

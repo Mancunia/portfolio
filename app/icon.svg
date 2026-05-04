@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <text
+    x="4"
+    y="70"
+    font-family="Arial Black, Helvetica Neue, Arial, sans-serif"
+    font-weight="900"
+    font-size="54"
+    fill="#000000"
+  >eom</text>
+  <circle cx="91" cy="68" r="7" fill="#F5A623"/>
+</svg>
