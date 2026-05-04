@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { fetchBlogPost } from "@/lib/blog-server";
 import { PostReader } from "@/components/PostReader";
 import { markdownToHtml } from "@/lib/markdown";
+import { OWNER_NAME } from "@/lib/site.config";
 
 export const revalidate = 60;
 
@@ -19,14 +20,14 @@ export async function generateMetadata({ params }: Readonly<Props>): Promise<Met
   const ogImage = post.assets.find((a) => a.type === "image")?.url;
 
   return {
-    title: `${post.title} — Emmanuel Osei Mensah`,
+    title: `${post.title} — ${OWNER_NAME}`,
     description,
     openGraph: {
       type: "article",
       title: post.title,
       description,
       publishedTime: post.date,
-      authors: ["Emmanuel Osei Mensah"],
+      authors: [OWNER_NAME],
       tags: post.tags,
       ...(ogImage ? { images: [{ url: ogImage, width: 1200, height: 630, alt: post.title }] } : {}),
     },
