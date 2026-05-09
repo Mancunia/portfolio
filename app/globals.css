@@ -1218,33 +1218,49 @@ body { font-family: var(--font-sans); }
 }
 
 @media (max-width: 768px) {
-  .wl__hero { padding: 40px 24px 32px; }
-  .wl__list { padding: 0 24px 64px; }
+  .wl__hero { padding: 40px 20px 32px; }
+  .wl__list { padding: 0 20px 64px; }
   .wl__row { grid-template-columns: 1fr; gap: 8px; }
   .wl__date { display: none; }
   .wl__read { text-align: left; }
-  .pr__header { padding: 40px 24px 24px; }
-  .pr__prose { padding: 32px 24px; font-size: 17px; }
-  .pr__assets, .pr__refs { padding: 0 24px 48px; }
-  .pe__chrome { padding: 12px 24px; }
-  .pe__body { padding: 24px 24px 64px; }
+  .pr__header { padding: 40px 20px 24px; }
+  .pr__prose { padding: 32px 20px; font-size: 17px; }
+  .pr__assets, .pr__refs { padding: 0 20px 48px; }
+  .pe__chrome { padding: 12px 20px; }
+  .pe__body { padding: 24px 20px 64px; }
   .pe__meta-row { flex-direction: column; gap: 0; }
 }
 
 @media (max-width: 768px) {
-  .hd__chrome { padding: 16px 24px; gap: 16px; }
+  .hd__chrome { padding: 12px 20px; gap: 12px; }
   .hd__nav { display: none; }
-  .hd__hero { padding: 32px 24px 56px; }
-  .hd__display { font-size: clamp(52px, 13vw, 96px); }
+  .hd__hero { padding: 40px 20px 64px; }
+  .hd__display { font-size: clamp(42px, 14vw, 84px); line-height: 1.0; }
+  .hd__display--outline { margin-top: 4px; }
   .hd__portrait { display: none; }
-  .hd__about { padding: 40px 24px; }
+  .hd__about { padding: 40px 20px; }
   .hd__about-row { grid-template-columns: 1fr; gap: 16px; }
-  .hd__section { padding: 40px 24px; }
-  .hd__skill-grid { grid-template-columns: repeat(2, 1fr); }
+  .hd__about-text { font-size: 22px; }
+  .hd__section { padding: 40px 20px; }
+  .hd__sh { gap: 12px; margin-bottom: 24px; }
+  .hd__sh h2 { font-size: 24px; }
+  .hd__skill-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
   .hd__cards { grid-template-columns: 1fr; }
-  .hd__writing li { grid-template-columns: 80px 1fr; }
+  .hd__writing li { grid-template-columns: 1fr; gap: 8px; }
+  .hd__writing li > span:first-child { font-size: 11px; }
   .hd__writing li > span:last-child { display: none; }
-  .hd__footer { grid-template-columns: 1fr; gap: 32px; padding: 40px 24px; }
+  .hd__writing h3 { font-size: 19px; }
+  .hd__footer { grid-template-columns: 1fr; gap: 40px; padding: 48px 20px; }
   .hd__footer-r { align-items: flex-start; }
+  .hd__footer-cta { font-size: 32px; }
   .hd__chrome-r .sync-badge { display: none; }
+  .hd__contact--solid { display: none; } /* Hide email in header on mobile */
+  .hd__based { align-self: center; text-align: center; }
+}
+
+@media (max-width: 480px) {
+  .hd__display { font-size: clamp(38px, 16vw, 64px); }
+  .hd__chips { flex-direction: column; width: 100%; }
+  .hd__pill { width: 100%; }
+  .hd__logos { gap: 16px 24px; }
 }

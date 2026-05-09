@@ -309,7 +309,7 @@ export function Portfolio({ initialData }: PortfolioProps) {
 
         <div className="hd__display-stack">
           <h1 className="hd__display hd__display--filled">
-            Software&nbsp;Engineer
+            Software Engineer
           </h1>
           <h1 className="hd__display hd__display--outline">&amp; Builder</h1>
 
@@ -337,28 +337,9 @@ export function Portfolio({ initialData }: PortfolioProps) {
             />
           </p>
 
-          <div className="hd__chips">
-            <button
-              className={`hd__pill${stance === "engineer" ? " is-on" : ""}`}
-              onClick={() => setStance("engineer")}
-              type="button"
-            >
-              You need an engineer
-            </button>
-            <button
-              className={`hd__pill${stance === "builder" ? " is-on" : ""}`}
-              onClick={() => setStance("builder")}
-              type="button"
-            >
-              You need a builder
-            </button>
+          <div className="hd__logos">
+            <span className="hd__logo">Adventist Believer Engineer</span>
           </div>
-
-          <ul className="hd__logos" aria-label="Worked with">
-            {data.experience.slice(0, 5).map((e) => (
-              <li key={e.id} className="hd__logo">{e.company}</li>
-            ))}
-          </ul>
         </div>
       </section>
 
@@ -483,8 +464,7 @@ export function Portfolio({ initialData }: PortfolioProps) {
           <span className="hd__num">03 — work</span>
           <h2>Selected projects</h2>
           <span className="hd__sh-meta">
-            showing <strong>{filteredProjects.length}</strong> of {data.projects.length} ·
-            stance: <strong>{stance}</strong>
+            showing <strong>{filteredProjects.length}</strong> of {data.projects.length}
           </span>
           {editable && (
             <button className="ed__add-btn" onClick={addProject} type="button">
