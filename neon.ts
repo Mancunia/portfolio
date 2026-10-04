@@ -2,7 +2,8 @@ import { defineConfig } from "@neon/config/v1";
 
 export default defineConfig({
   // Declare your Neon services here
-  auth: false,
+  // Managed Better Auth — used only to sign in the site admin (role "admin")
+  auth: true,
   // Portrait and blog images, served to visitors via plain public URLs
   buckets: {
     assets: { access: "public_read" },

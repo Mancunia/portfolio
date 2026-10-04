@@ -19,8 +19,9 @@
 
 2.  **Admin Operations**:
     - Admin logs in via `/api/admin/login`.
-    - Credentials are verified against `ADMIN_PASSWORD_HASH`.
-    - A JWT is issued and stored in a cookie.
+    - Email and password are verified server-to-server against Neon Auth (`NEON_AUTH_BASE_URL`).
+    - The user's Neon Auth role must include `admin`; anyone else gets a 403. The Neon session is revoked immediately.
+    - The app issues its own 8-hour JWT (`JWT_SECRET`) in the `portfolio_session` cookie.
     - Admin can then access protected routes (e.g., `/writing/new`, `/writing/[slug]/edit`).
     - Writes to the database are performed via API routes; a portfolio save runs as a single transaction.
 
