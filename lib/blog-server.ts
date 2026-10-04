@@ -1,12 +1,6 @@
-import { createClient } from "@supabase/supabase-js";
-import type { BlogPost } from "./types";
-
-function getServiceClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) throw new Error("Supabase env vars are not set");
-  return createClient(url, key);
-}
+import type { BlogAsset, BlogPost } from "./types";
+import { getDb } from "./db";
+import { toPublicUrl, toStoredRef } from "./storage";
 
 type DbRow = {
   id: string;
@@ -17,10 +11,14 @@ type DbRow = {
   date_display: string;
   read_time: string;
   tags: string[];
-  assets: unknown[];
+  assets: BlogAsset[];
   refs: unknown[];
   published: boolean;
 };
+
+function mapImageUrls(assets: BlogAsset[], fn: (url: string) => string): BlogAsset[] {
+  return assets.map((a) => (a.type === "image" && a.url ? { ...a, url: fn(a.url) } : a));
+}
 
 function rowToPost(r: DbRow): BlogPost {
   return {
@@ -32,83 +30,66 @@ function rowToPost(r: DbRow): BlogPost {
     date: r.date_display,
     read: r.read_time,
     tags: r.tags ?? [],
-    assets: (r.assets ?? []) as BlogPost["assets"],
+    assets: mapImageUrls(r.assets ?? [], toPublicUrl),
     references: (r.refs ?? []) as BlogPost["references"],
     published: r.published,
   };
 }
 
+function assetsJson(assets: BlogAsset[]): string {
+  return JSON.stringify(mapImageUrls(assets, toStoredRef));
+}
+
 export async function fetchBlogPosts(publishedOnly = true): Promise<BlogPost[]> {
-  const db = getServiceClient();
-  let q = db.from("blog_posts").select("*").order("sort_order");
-  if (publishedOnly) q = q.eq("published", true);
-  const { data, error } = await q;
-  if (error) throw error;
-  return ((data ?? []) as DbRow[]).map(rowToPost);
+  const sql = getDb();
+  const rows = publishedOnly
+    ? await sql`select * from blog_posts where published order by sort_order`
+    : await sql`select * from blog_posts order by sort_order`;
+  return (rows as DbRow[]).map(rowToPost);
 }
 
 export async function fetchBlogPost(slug: string): Promise<BlogPost | null> {
-  const db = getServiceClient();
-  const { data, error } = await db
-    .from("blog_posts")
-    .select("*")
-    .eq("slug", slug)
-    .single();
-  if (error) return null;
-  return rowToPost(data as DbRow);
+  const sql = getDb();
+  const rows = await sql`select * from blog_posts where slug = ${slug}`;
+  return rows[0] ? rowToPost(rows[0] as DbRow) : null;
 }
 
 export async function createBlogPost(post: Omit<BlogPost, "id">): Promise<BlogPost> {
-  const db = getServiceClient();
+  const sql = getDb();
   const id = `bp-${Date.now()}`;
-  const { data, error } = await db
-    .from("blog_posts")
-    .insert({
-      id,
-      slug: post.slug,
-      title: post.title,
-      excerpt: post.excerpt,
-      content: post.content,
-      date_display: post.date,
-      read_time: post.read,
-      tags: post.tags,
-      assets: post.assets,
-      refs: post.references,
-      published: post.published,
-      sort_order: 0,
-    })
-    .select()
-    .single();
-  if (error) throw error;
-  return rowToPost(data as DbRow);
+  const rows = await sql`
+    insert into blog_posts
+      (id, slug, title, excerpt, content, date_display, read_time, tags, assets, refs, published, sort_order)
+    values (${id}, ${post.slug}, ${post.title}, ${post.excerpt}, ${post.content}, ${post.date},
+      ${post.read}, ${post.tags}, ${assetsJson(post.assets)}::jsonb,
+      ${JSON.stringify(post.references)}::jsonb, ${post.published}, 0)
+    returning *`;
+  return rowToPost(rows[0] as DbRow);
 }
 
+// Fields left undefined keep their current value.
 export async function updateBlogPost(slug: string, post: Partial<BlogPost>): Promise<BlogPost> {
-  const db = getServiceClient();
-  const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
-  if (post.title !== undefined) patch.title = post.title;
-  if (post.slug !== undefined) patch.slug = post.slug;
-  if (post.excerpt !== undefined) patch.excerpt = post.excerpt;
-  if (post.content !== undefined) patch.content = post.content;
-  if (post.date !== undefined) patch.date_display = post.date;
-  if (post.read !== undefined) patch.read_time = post.read;
-  if (post.tags !== undefined) patch.tags = post.tags;
-  if (post.assets !== undefined) patch.assets = post.assets;
-  if (post.references !== undefined) patch.refs = post.references;
-  if (post.published !== undefined) patch.published = post.published;
-
-  const { data, error } = await db
-    .from("blog_posts")
-    .update(patch)
-    .eq("slug", slug)
-    .select()
-    .single();
-  if (error) throw error;
-  return rowToPost(data as DbRow);
+  const sql = getDb();
+  const rows = await sql`
+    update blog_posts set
+      title        = coalesce(${post.title ?? null}, title),
+      slug         = coalesce(${post.slug ?? null}, slug),
+      excerpt      = coalesce(${post.excerpt ?? null}, excerpt),
+      content      = coalesce(${post.content ?? null}, content),
+      date_display = coalesce(${post.date ?? null}, date_display),
+      read_time    = coalesce(${post.read ?? null}, read_time),
+      tags         = coalesce(${post.tags ?? null}::text[], tags),
+      assets       = coalesce(${post.assets ? assetsJson(post.assets) : null}::jsonb, assets),
+      refs         = coalesce(${post.references ? JSON.stringify(post.references) : null}::jsonb, refs),
+      published    = coalesce(${post.published ?? null}::boolean, published),
+      updated_at   = now()
+    where slug = ${slug}
+    returning *`;
+  if (!rows[0]) throw new Error(`Blog post not found: ${slug}`);
+  return rowToPost(rows[0] as DbRow);
 }
 
 export async function deleteBlogPost(slug: string): Promise<void> {
-  const db = getServiceClient();
-  const { error } = await db.from("blog_posts").delete().eq("slug", slug);
-  if (error) throw error;
+  const sql = getDb();
+  await sql`delete from blog_posts where slug = ${slug}`;
 }

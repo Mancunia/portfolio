@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { verifyAdminPassword } from "@/lib/supabase-server";
-import { createSession, SESSION_COOKIE } from "@/lib/auth";
+import { createSession, verifyAdminPassword, SESSION_COOKIE } from "@/lib/auth";
 
 export async function POST(req: Request) {
   try {
