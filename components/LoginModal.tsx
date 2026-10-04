@@ -5,10 +5,11 @@ import { useEffect, useRef, useState } from "react";
 interface LoginModalProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (password: string) => Promise<boolean>;
+  onSubmit: (email: string, password: string) => Promise<boolean>;
 }
 
 export function LoginModal({ open, onClose, onSubmit }: LoginModalProps) {
+  const [email, setEmail] = useState("");
   const [pw, setPw] = useState("");
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
@@ -16,6 +17,7 @@ export function LoginModal({ open, onClose, onSubmit }: LoginModalProps) {
 
   useEffect(() => {
     if (open) {
+      setEmail("");
       setPw("");
       setErr("");
       setBusy(false);
@@ -29,9 +31,9 @@ export function LoginModal({ open, onClose, onSubmit }: LoginModalProps) {
     e.preventDefault();
     setBusy(true);
     setErr("");
-    const ok = await onSubmit(pw);
+    const ok = await onSubmit(email.trim(), pw);
     setBusy(false);
-    if (!ok) setErr("Incorrect password. Please try again.");
+    if (!ok) setErr("Sign-in failed — check your credentials or admin access.");
   };
 
   return (
@@ -49,10 +51,18 @@ export function LoginModal({ open, onClose, onSubmit }: LoginModalProps) {
         </div>
         <h2 className="modal__title">Sign in to edit</h2>
         <p className="modal__subtitle">
-          Enter the admin password to enable editing of every section of the portfolio.
+          Sign in with your admin account to enable editing of every section of the portfolio.
         </p>
         <input
           ref={inputRef}
+          type="email"
+          className="modal__input"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          autoComplete="username"
+        />
+        <input
           type="password"
           className="modal__input"
           placeholder="Password"
@@ -65,7 +75,7 @@ export function LoginModal({ open, onClose, onSubmit }: LoginModalProps) {
           <button type="button" className="btn btn--ghost" onClick={onClose} disabled={busy}>
             Cancel
           </button>
-          <button type="submit" className="btn btn--primary" disabled={busy || !pw}>
+          <button type="submit" className="btn btn--primary" disabled={busy || !email || !pw}>
             {busy ? "Verifying…" : "Continue"}
           </button>
         </div>

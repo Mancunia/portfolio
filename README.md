@@ -45,7 +45,7 @@ A minimal, durable personal portfolio and blog template built with Next.js and N
     ```bash
     cp .env.example .env.local
     ```
-    You will need a `JWT_SECRET`; the Neon variables are filled in by the next step. To generate the `ADMIN_PASSWORD_HASH`, see the [Admin Setup](#admin-setup) section.
+    You will need a `JWT_SECRET`; the Neon variables (including `NEON_AUTH_BASE_URL`) are filled in by the next step. To create your admin account, see the [Admin Setup](#admin-setup) section.
 
 4.  **Database Setup**
     Link the project and create the `assets` image bucket declared in `neon.ts`. This writes `DATABASE_URL` and the `AWS_*` storage credentials to `.env`:
@@ -66,18 +66,26 @@ A minimal, durable personal portfolio and blog template built with Next.js and N
 
 ## Admin Setup
 
-To access the admin features (like creating new writing posts), you need to set up an admin password.
+Admin sign-in uses [Neon Auth](https://neon.com/docs/auth/overview) (Managed Better Auth, declared with `auth: true` in `neon.ts`). Anyone can read the site; only Neon Auth users with the `admin` role can edit.
 
-1.  **Generate a password hash**:
+1.  **Create your account** while public sign-up is still on (one time):
     ```bash
-    node -e "require('bcryptjs').hash('yourpassword',12).then(console.log)"
+    curl -X POST "$NEON_AUTH_BASE_URL/sign-up/email" -H "Content-Type: application/json" -H "Origin: http://localhost:3000" \
+      -d '{"email":"you@example.com","password":"a-strong-password","name":"Your Name"}'
     ```
-2.  **Add to `.env.local`**:
-    ```env
-    ADMIN_PASSWORD_HASH="the-generated-hash"
+2.  **Grant the admin role** (user id from `neon neon-auth status` / the Neon Console Auth users list):
+    ```bash
+    neon neon-auth user set-role <user-id> --roles admin
     ```
-3.  **Login**:
-    Visit any protected route (like `/writing/new`) or click the sync icon in the UI to be prompted for login.
+3.  **Close sign-up** so nobody else can create accounts:
+    ```bash
+    neon neon-auth config email-password update --disable-sign-up
+    ```
+4.  **Trust your production origin** (localhost is allowed by default):
+    ```bash
+    neon neon-auth domain add https://your-domain.com
+    ```
+5.  **Login**: click the lock in the nav and enter your email and password. The server signs in against Neon Auth, checks the role, and sets an 8-hour `portfolio_session` cookie.
 
 ## How to test
 

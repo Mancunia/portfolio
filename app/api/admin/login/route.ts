@@ -1,19 +1,21 @@
 import { NextResponse } from "next/server";
-import { createSession, verifyAdminPassword, SESSION_COOKIE } from "@/lib/auth";
+import { createSession, signInAdmin, SESSION_COOKIE } from "@/lib/auth";
 
 export async function POST(req: Request) {
   try {
-    const { password } = await req.json();
-    if (!password || typeof password !== "string") {
-      return NextResponse.json({ error: "Missing password" }, { status: 400 });
+    const { email, password } = await req.json();
+    if (!email || typeof email !== "string" || !password || typeof password !== "string") {
+      return NextResponse.json({ error: "Missing email or password" }, { status: 400 });
     }
 
-    const ok = await verifyAdminPassword(password);
-    if (!ok) {
-      return NextResponse.json({ error: "Invalid password" }, { status: 401 });
+    const result = await signInAdmin(email, password, new URL(req.url).origin);
+    if (!result.ok) {
+      return result.reason === "forbidden"
+        ? NextResponse.json({ error: "Not an admin" }, { status: 403 })
+        : NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
     }
 
-    const token = await createSession();
+    const token = await createSession(result.userId);
 
     const res = NextResponse.json({ ok: true });
     res.cookies.set(SESSION_COOKIE, token, {
