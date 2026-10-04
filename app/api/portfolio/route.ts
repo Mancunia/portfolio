@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { fetchPortfolioData, savePortfolioData } from "@/lib/supabase-server";
+import { fetchPortfolioData, savePortfolioData } from "@/lib/portfolio-server";
 import { isAuthenticated } from "@/lib/auth";
 
 export async function GET() {

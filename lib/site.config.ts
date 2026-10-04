@@ -18,8 +18,8 @@ export const LINKEDIN_URL    = process.env.NEXT_PUBLIC_LINKEDIN_URL    ?? "";
 export const SITE_TITLE       = process.env.NEXT_PUBLIC_SITE_TITLE       ?? `${OWNER_NAME} — Portfolio`;
 export const SITE_DESCRIPTION = process.env.NEXT_PUBLIC_SITE_DESCRIPTION ?? `${OWNER_TITLE} · ${OWNER_LOCATION}`;
 
-// ── fallback data (used when Supabase is not configured) ──────────────────────
-// Structured content (projects, experience, writing) lives in Supabase.
+// ── fallback data (used when the database is not configured) ───────────────
+// Structured content (projects, experience, writing) lives in Postgres (Neon).
 // Only identity fields are seeded here so the page renders without a database.
 export const FALLBACK_DATA: PortfolioData = {
   profile: {

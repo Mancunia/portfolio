@@ -1,4 +1,4 @@
-import { fetchPortfolioData } from "@/lib/supabase-server";
+import { fetchPortfolioData } from "@/lib/portfolio-server";
 import { Portfolio } from "@/components/Portfolio";
 import { FALLBACK_DATA } from "@/lib/site.config";
 import type { PortfolioData } from "@/lib/types";
@@ -12,7 +12,7 @@ export default async function HomePage() {
   try {
     data = await fetchPortfolioData();
   } catch {
-    // Supabase not configured yet — serve fallback so the app renders
+    // Database not configured yet — serve fallback so the app renders
     data = FALLBACK_DATA;
   }
 

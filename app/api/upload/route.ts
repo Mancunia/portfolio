@@ -1,15 +1,7 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { randomUUID } from "node:crypto";
 import { isAuthenticated } from "@/lib/auth";
-
-const BUCKET = "assets";
-
-function getServiceClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) throw new Error("Supabase env vars not configured");
-  return createClient(url, key);
-}
+import { uploadObject, toPublicUrl } from "@/lib/storage";
 
 export async function POST(req: Request) {
   const authed = await isAuthenticated();
@@ -25,21 +17,16 @@ export async function POST(req: Request) {
 
   const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
   const kind = form.get("kind");
-  const path = kind === "blog" ? `blog/${Date.now()}.${ext}` : `portrait.${ext}`;
+  // A new key per upload: objects are cached as immutable, so never overwrite one
+  const key = `${kind === "blog" ? "blog" : "portrait"}/${randomUUID()}.${ext}`;
   const buffer = Buffer.from(await file.arrayBuffer());
 
-  const db = getServiceClient();
-  const { error } = await db.storage
-    .from(BUCKET)
-    .upload(path, buffer, { contentType: file.type, upsert: true });
-
-  if (error) {
-    console.error("Storage upload error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  try {
+    await uploadObject(key, buffer, file.type || "application/octet-stream");
+  } catch (err) {
+    console.error("Storage upload error:", err);
+    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
   }
 
-  const { data } = db.storage.from(BUCKET).getPublicUrl(path);
-  // Bust cache so the browser fetches the new image
-  const url = `${data.publicUrl}?t=${Date.now()}`;
-  return NextResponse.json({ url });
+  return NextResponse.json({ url: toPublicUrl(key) });
 }

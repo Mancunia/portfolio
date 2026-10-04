@@ -34,4 +34,11 @@ export async function isAuthenticated(): Promise<boolean> {
   return verifySession(token);
 }
 
+export async function verifyAdminPassword(password: string): Promise<boolean> {
+  const hash = process.env.ADMIN_PASSWORD_HASH;
+  if (!hash) throw new Error("ADMIN_PASSWORD_HASH is not set");
+  const bcrypt = await import("bcryptjs");
+  return bcrypt.compare(password, hash);
+}
+
 export { SESSION_COOKIE };

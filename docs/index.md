@@ -6,7 +6,7 @@ This directory contains detailed documentation for the Portfolio project.
 
 - [Overview](overview.md): High-level project description and goals.
 - [Architecture](architecture.md): Technical stack and system design.
-- [Database Schema](../supabase/schema.sql): Raw SQL schema for Supabase.
+- [Database Schema](../db/schema.sql): Raw SQL schema (Postgres / Neon).
 
 ## Getting Started
 

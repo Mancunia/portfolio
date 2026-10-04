@@ -1,21 +1,22 @@
 # Portfolio
 
-A minimal, durable personal portfolio and blog template built with Next.js and Supabase. Designed for speed, longevity, and ease of content management.
+A minimal, durable personal portfolio and blog template built with Next.js and Neon. Designed for speed, longevity, and ease of content management.
 
 ## Features
 
 - **Next.js 15 (App Router)**: Leveraging the latest React features and server components.
-- **Supabase Backend**: Real-time database and row-level security.
+- **Neon Backend**: Serverless Postgres plus S3-compatible object storage for images, both branchable.
 - **Custom Admin CMS**: Built-in editor for writing and managing portfolio content.
-- **Dynamic Content**: Experience, projects, and skills managed via Supabase.
-- **Fallback Mode**: Gracious degradation if Supabase is not yet configured.
+- **Dynamic Content**: Experience, projects, and skills managed via the built-in admin.
+- **Fallback Mode**: Gracious degradation if the database is not yet configured.
 - **Minimal Design**: Clean, typography-focused aesthetic using Vanilla CSS.
 
 ## Tech Stack
 
 - **Framework**: [Next.js](https://nextjs.org/)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Database / Auth**: [Supabase](https://supabase.com/)
+- **Database**: [Neon](https://neon.com/) Postgres (`@neondatabase/serverless`)
+- **Image storage**: Neon Object Storage (S3 API via `@aws-sdk/client-s3`)
 - **Authentication**: Custom JWT-based admin session.
 - **Styling**: Vanilla CSS with CSS Variables.
 
@@ -24,7 +25,7 @@ A minimal, durable personal portfolio and blog template built with Next.js and S
 ### Prerequisites
 
 - **Node.js**: Version 20.x or higher.
-- **Supabase**: A Supabase project (free tier works great).
+- **Neon**: A Neon project (free tier works great) and the CLI: `npm i -g neon && neon login`.
 
 ### Setup Steps
 
@@ -44,11 +45,18 @@ A minimal, durable personal portfolio and blog template built with Next.js and S
     ```bash
     cp .env.example .env.local
     ```
-    You will need your Supabase URL and keys, and a `JWT_SECRET`. To generate the `ADMIN_PASSWORD_HASH`, see the [Admin Setup](#admin-setup) section.
+    You will need a `JWT_SECRET`; the Neon variables are filled in by the next step. To generate the `ADMIN_PASSWORD_HASH`, see the [Admin Setup](#admin-setup) section.
 
 4.  **Database Setup**
-    - Go to your Supabase project's **SQL Editor**.
-    - Copy the contents of `supabase/schema.sql` and run it. This will create the necessary tables and seed initial data.
+    Link the project and create the `assets` image bucket declared in `neon.ts`. This writes `DATABASE_URL` and the `AWS_*` storage credentials to `.env`:
+    ```bash
+    neon link --project-id <your-project-id> --branch production -y
+    neon deploy
+    ```
+    Then create the tables and starter content (`db/schema.sql`, `db/seed.sql`):
+    ```bash
+    node --env-file=.env scripts/db-setup.mjs --seed
+    ```
 
 5.  **Run the application**
     ```bash
