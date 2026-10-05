@@ -86,7 +86,7 @@ export function PostReader({ post }: Readonly<Props>) {
 
   const editable = authed && editing;
 
-  const handleSignIn = async (email: string, password: string): Promise<boolean> => {
+  const handleSignIn = async (email: string, password: string): Promise<true | string> => {
     const res = await fetch("/api/admin/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -99,7 +99,8 @@ export function PostReader({ post }: Readonly<Props>) {
       setEditing(true);
       return true;
     }
-    return false;
+    const { error } = await res.json().catch(() => ({ error: "" }));
+    return error || "Sign-in failed. Please try again.";
   };
 
   const hasAssets = post.assets.length > 0;

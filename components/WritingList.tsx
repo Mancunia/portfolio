@@ -25,7 +25,7 @@ export function WritingList({ posts }: Readonly<Props>) {
     ? posts.filter((p) => p.tags.includes(activeTag))
     : posts;
 
-  const handleSignIn = async (email: string, password: string): Promise<boolean> => {
+  const handleSignIn = async (email: string, password: string): Promise<true | string> => {
     const res = await fetch("/api/admin/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -38,7 +38,8 @@ export function WritingList({ posts }: Readonly<Props>) {
       setEditing(true);
       return true;
     }
-    return false;
+    const { error } = await res.json().catch(() => ({ error: "" }));
+    return error || "Sign-in failed. Please try again.";
   };
 
   return (

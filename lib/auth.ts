@@ -1,5 +1,6 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
+import { getDb } from "@/lib/db";
 
 const SESSION_COOKIE = "portfolio_session";
 const secret = new TextEncoder().encode(
@@ -43,8 +44,9 @@ type AdminSignIn =
   | { ok: true; userId: string }
   | { ok: false; reason: "invalid" | "forbidden" };
 
-// Signs in against Neon Auth server-to-server, checks the user's role, then
-// revokes the Neon session — the app only keeps its own short-lived cookie.
+// Signs in against Neon Auth server-to-server, checks the user's role in the
+// neon_auth.user table, then signs the Neon session out — the app only keeps
+// its own short-lived cookie.
 export async function signInAdmin(
   email: string,
   password: string,
@@ -61,23 +63,30 @@ export async function signInAdmin(
   });
   if (!signIn.ok) return { ok: false, reason: "invalid" };
 
-  const { token } = (await signIn.json()) as { token?: string };
-  if (!token) return { ok: false, reason: "invalid" };
-  const bearer = { Authorization: `Bearer ${token}`, Origin: origin };
+  const body = (await signIn.json()) as { token?: string; user?: { id?: string } };
+  const userId = body.user?.id;
+  if (!userId) return { ok: false, reason: "invalid" };
 
+  // get-session doesn't accept the token as a Bearer, so read the role
+  // straight from Neon Auth's table on the same branch.
   try {
-    const res = await fetch(`${base}/get-session`, { headers: bearer, cache: "no-store" });
-    const session = res.ok
-      ? ((await res.json()) as { user?: { id: string; role?: string | null; banned?: boolean | null } } | null)
-      : null;
-    const user = session?.user;
+    const sql = getDb();
+    const rows = await sql`select role, banned from neon_auth."user" where id = ${userId}`;
+    const user = rows[0] as { role: string | null; banned: boolean | null } | undefined;
     const roles = (user?.role ?? "").split(",").map((r) => r.trim());
     if (!user || user.banned || !roles.includes(ADMIN_ROLE)) {
       return { ok: false, reason: "forbidden" };
     }
-    return { ok: true, userId: user.id };
+    return { ok: true, userId };
   } finally {
-    await fetch(`${base}/sign-out`, { method: "POST", headers: bearer }).catch(() => {});
+    const cookie = signIn.headers
+      .getSetCookie()
+      .map((c) => c.split(";")[0])
+      .join("; ");
+    await fetch(`${base}/sign-out`, {
+      method: "POST",
+      headers: { Origin: origin, Cookie: cookie, ...(body.token ? { Authorization: `Bearer ${body.token}` } : {}) },
+    }).catch(() => {});
   }
 }
 

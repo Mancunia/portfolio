@@ -190,7 +190,7 @@ export function Portfolio({ initialData }: PortfolioProps) {
   }, [update, editing]);
 
   // ── Auth ─────────────────────────────────────────────────
-  const handleSignIn = async (email: string, password: string): Promise<boolean> => {
+  const handleSignIn = async (email: string, password: string): Promise<true | string> => {
     const res = await fetch("/api/admin/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -204,7 +204,8 @@ export function Portfolio({ initialData }: PortfolioProps) {
       showToast("Signed in — edits sync to DB automatically");
       return true;
     }
-    return false;
+    const { error } = await res.json().catch(() => ({ error: "" }));
+    return error || "Sign-in failed. Please try again.";
   };
 
   const handleSignOut = async () => {
