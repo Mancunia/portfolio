@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 interface LoginModalProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (email: string, password: string) => Promise<boolean>;
+  onSubmit: (email: string, password: string) => Promise<true | string>;
 }
 
 export function LoginModal({ open, onClose, onSubmit }: LoginModalProps) {
@@ -31,9 +31,9 @@ export function LoginModal({ open, onClose, onSubmit }: LoginModalProps) {
     e.preventDefault();
     setBusy(true);
     setErr("");
-    const ok = await onSubmit(email.trim(), pw);
+    const result = await onSubmit(email.trim(), pw);
     setBusy(false);
-    if (!ok) setErr("Sign-in failed — check your credentials or admin access.");
+    if (result !== true) setErr(result);
   };
 
   return (
